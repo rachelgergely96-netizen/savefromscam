@@ -27,6 +27,7 @@ function AuthCallbackContent() {
       return;
     }
 
+    // PKCE / OAuth: exchange code for session
     if (code) {
       supabase.auth
         .exchangeCodeForSession(code)
@@ -38,18 +39,42 @@ function AuthCallbackContent() {
           setError(err.message || "Sign-in failed.");
           setTimeout(() => router.replace("/auth"), 3000);
         });
-    } else {
-      // No code: might be magic link or already handled
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session) {
-          setStatus("Success! Redirecting...");
-          router.replace("/");
-        } else {
-          setError("No authorization code received.");
-          setTimeout(() => router.replace("/auth"), 3000);
-        }
-      });
+      return;
     }
+
+    // Magic link (implicit): tokens in URL hash
+    if (typeof window !== "undefined" && window.location.hash) {
+      const hashParams = new URLSearchParams(
+        window.location.hash.substring(1) // remove #
+      );
+      const accessToken = hashParams.get("access_token");
+      const refreshToken = hashParams.get("refresh_token");
+      if (accessToken && refreshToken) {
+        supabase.auth
+          .setSession({ access_token: accessToken, refresh_token: refreshToken })
+          .then(() => {
+            setStatus("Success! Redirecting...");
+            window.history.replaceState(null, "", window.location.pathname);
+            router.replace("/");
+          })
+          .catch((err) => {
+            setError(err.message || "Sign-in failed.");
+            setTimeout(() => router.replace("/auth"), 3000);
+          });
+        return;
+      }
+    }
+
+    // Fallback: already have session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setStatus("Success! Redirecting...");
+        router.replace("/");
+      } else {
+        setError("No authorization received. Try the link again or sign in again.");
+        setTimeout(() => router.replace("/auth"), 3000);
+      }
+    });
   }, [searchParams, router]);
 
   return (
