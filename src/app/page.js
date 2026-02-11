@@ -9,7 +9,7 @@ export default function Home() {
       {/* Hero + inline demo */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-4">
         <div className="text-center mb-8">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-4 text-navy-900 font-sans">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-4 text-teal-500 font-sans">
             Know if it's a scam—before you respond.
           </h1>
           <p className="text-xl text-navy-600 leading-relaxed max-w-2xl mx-auto font-sans">
