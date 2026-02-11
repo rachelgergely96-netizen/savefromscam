@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
+import { createHash } from "crypto";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
@@ -21,6 +22,12 @@ function getSupabaseUserFromToken(accessToken) {
   return userClient;
 }
 
+function getIpHash(request) {
+  const forwarded = request.headers.get("x-forwarded-for");
+  const ip = forwarded?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown";
+  return createHash("sha256").update(ip).digest("hex").slice(0, 32);
+}
+
 export async function POST(request) {
   try {
     if (!process.env.ANTHROPIC_API_KEY) {
@@ -33,6 +40,75 @@ export async function POST(request) {
 
     const authHeader = request.headers.get("Authorization");
     const accessToken = authHeader?.replace(/^Bearer\s+/i, "").trim();
+    const fromHomepage = request.headers.get("X-From-Homepage") === "true";
+
+    // Optional: one anonymous check per IP per day from homepage only
+    if (!accessToken && fromHomepage && supabaseAdmin) {
+      const { text } = await request.json().catch(() => ({}));
+      if (!text || typeof text !== "string" || text.trim().length === 0) {
+        return Response.json({ error: "No text provided" }, { status: 400 });
+      }
+      if (text.length > 5000) {
+        return Response.json(
+          { error: "Text too long. Maximum 5000 characters." },
+          { status: 400 }
+        );
+      }
+      const todayUtc = new Date().toISOString().slice(0, 10);
+      const ipHash = getIpHash(request);
+      const { data: existing } = await supabaseAdmin
+        .from("anon_homepage_checks")
+        .select("id")
+        .eq("ip_hash", ipHash)
+        .eq("created_at", todayUtc)
+        .limit(1)
+        .maybeSingle();
+      if (existing) {
+        return Response.json(
+          { error: "You've used your one free homepage check. Create an account for 5 checks per day." },
+          { status: 401 }
+        );
+      }
+      const message = await client.messages.create({
+        model: "claude-3-5-sonnet-latest",
+        max_tokens: 1024,
+        messages: [
+          {
+            role: "user",
+            content: `You are a scam detection expert. Analyze the following message and determine if it is likely a scam or legitimate.
+
+Respond ONLY with valid JSON in this exact format (no markdown, no code blocks):
+{
+  "verdict": "HIGH RISK — LIKELY SCAM" or "MEDIUM RISK — SUSPICIOUS" or "LOW RISK — LIKELY SAFE",
+  "confidence": <number 0-100>,
+  "tactics": [
+    {
+      "name": "<tactic name like 'Urgency Pressure' or 'Emotional Manipulation'>",
+      "score": <severity 0-100>,
+      "desc": "<one sentence explaining how this tactic is used in the message>"
+    }
+  ],
+  "summary": "<2-3 sentence explanation of why this is or isn't a scam>",
+  "actions": ["<recommended action 1>", "<recommended action 2>", "<recommended action 3>"]
+}
+
+Include 2-5 tactics. If the message appears legitimate, still analyze it but give low scores.
+
+Message to analyze:
+"""
+${text}
+"""`,
+          },
+        ],
+      });
+      const result = JSON.parse(message.content[0].text);
+      await supabaseAdmin.from("anon_homepage_checks").insert({
+        ip_hash: ipHash,
+        created_at: todayUtc,
+      });
+      return Response.json(result);
+    }
+
     if (!accessToken) {
       return Response.json(
         { error: "Please sign in to use Scam Check." },
@@ -181,8 +257,14 @@ ${text}
       );
     }
 
+    const message = error?.message || "Unknown error";
+    const isAnthropic = message.includes("anthropic") || message.includes("API key") || message.includes("401") || message.includes("429");
+    const userMessage = isAnthropic
+      ? "AI service error. Check that ANTHROPIC_API_KEY is set and valid in Vercel."
+      : "Analysis failed. Please try again.";
+
     return Response.json(
-      { error: "Analysis failed. Please try again." },
+      { error: userMessage },
       { status: 500 }
     );
   }

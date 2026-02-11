@@ -25,6 +25,16 @@
 
   --font-serif: "Georgia", "Times New Roman", serif;
   --font-sans: "Trebuchet MS", "Segoe UI", sans-serif;
+
+  /* Design tokens: single radius, shadow, 8pt spacing */
+  --radius: 16px;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --spacing-1: 8px;
+  --spacing-2: 16px;
+  --spacing-3: 24px;
+  --spacing-4: 32px;
+  --spacing-5: 40px;
+  --spacing-6: 48px;
 }
 
 /* Base styles */
@@ -50,14 +60,50 @@ html {
   animation: spin 0.8s linear infinite;
 }
 
-/* Subtle grid texture overlay */
+/* Slightly textured background (very subtle) */
 .bg-grid-pattern {
   background-image: radial-gradient(
     circle at 1px 1px,
-    rgba(46, 196, 182, 0.03) 1px,
+    rgba(30, 41, 59, 0.4) 1px,
     transparent 0
   );
-  background-size: 40px 40px;
+  background-size: 24px 24px;
+}
+
+/* Design system: flat card and primary button */
+.rounded-card {
+  border-radius: var(--radius);
+}
+.shadow-card {
+  box-shadow: var(--shadow-card);
+}
+.btn-primary {
+  background-color: var(--color-teal-500);
+  color: var(--color-navy-950);
+  font-weight: 700;
+  border-radius: var(--radius);
+  transition: box-shadow 0.15s ease, filter 0.15s ease;
+}
+.btn-primary:hover {
+  box-shadow: var(--shadow-card);
+  filter: brightness(1.05);
+}
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-navy-200);
+  border: 1px solid rgba(71, 85, 105, 0.5);
+  border-radius: var(--radius);
+  font-weight: 600;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.btn-secondary:hover {
+  border-color: var(--color-navy-500);
+  background-color: rgba(30, 41, 59, 0.5);
+}
+.card-flat {
+  background-color: var(--color-navy-900);
+  border: 1px solid rgba(71, 85, 105, 0.4);
+  border-radius: var(--radius);
 }
 
 /* Focus styles for accessibility */

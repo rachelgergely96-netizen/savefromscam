@@ -1,321 +1,156 @@
 import Link from "next/link";
-import AnimatedNumber from "@/components/AnimatedNumber";
+import {
+  FileText,
+  Sparkles,
+  Shield,
+  Truck,
+  CreditCard,
+  Mail,
+  UserCircle,
+  Wrench,
+} from "lucide-react";
+import HomepageCheckDemo from "@/components/HomepageCheckDemo";
+import LeadMagnet from "@/components/LeadMagnet";
 
-function StatCard({ value, suffix, label, color }) {
-  return (
-    <div className="bg-navy-900/70 rounded-2xl p-5 text-center border border-teal-500/10">
-      <div className={`text-3xl font-extrabold font-sans ${color}`}>
-        <AnimatedNumber target={value} suffix={suffix} />
-      </div>
-      <div className="text-xs text-navy-500 mt-1 font-sans">{label}</div>
-    </div>
-  );
-}
+const STEPS = [
+  {
+    title: "Explain why it's risky",
+    description: "We break down the manipulation tactics so you see exactly how the scam works.",
+    icon: FileText,
+  },
+  {
+    title: "Give safe next action",
+    description: "Clear recommended steps—what to do and what not to do.",
+    icon: Sparkles,
+  },
+  {
+    title: "Train your instincts",
+    description: "Use the simulator to practice spotting scams in a safe environment.",
+    icon: Shield,
+  },
+];
 
-function FeatureCard({ number, title, description, icon }) {
-  return (
-    <div className="bg-navy-900/70 rounded-2xl p-6 border border-teal-500/10 hover:border-teal-500/25 transition-colors">
-      <div className="flex items-start gap-4">
-        <div className="w-12 h-12 rounded-xl bg-teal-500/12 flex items-center justify-center text-2xl shrink-0">
-          {icon}
-        </div>
-        <div>
-          <div className="text-xs text-teal-500 font-bold font-sans mb-1">
-            0{number}
-          </div>
-          <h3 className="text-lg font-bold text-navy-200 mb-2">{title}</h3>
-          <p className="text-sm text-navy-400 leading-relaxed">{description}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
+const SCAM_PATTERNS = [
+  { label: "USPS / delivery", icon: Truck },
+  { label: "Zelle / payment", icon: CreditCard },
+  { label: "IRS / government", icon: FileText },
+  { label: "PayPal / accounts", icon: Mail },
+  { label: "Grandparent / emergency", icon: UserCircle },
+  { label: "Tech support", icon: Wrench },
+];
 
 export default function Home() {
   return (
     <main>
-      {/* Hero */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-16 text-center">
-        <div className="text-xs tracking-[3px] text-gold-500 uppercase mb-4 font-sans font-semibold">
-          AI-Powered Scam Protection for Families
-        </div>
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-navy-200 to-teal-500 bg-clip-text text-transparent">
-          Outsmart Scammers
-          <br />
-          Before They Strike
+      {/* Hero + inline demo */}
+      <section className="max-w-3xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-4 text-center">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4 text-navy-200 font-sans">
+          Know if it&apos;s a scam—before you respond.
         </h1>
-        <p className="text-lg text-navy-400 leading-relaxed max-w-xl mx-auto mb-10">
-          Train your instincts. Check suspicious messages instantly. Join a
-          community that watches out for each other. Free to start.
+        <p className="text-lg text-navy-400 leading-relaxed max-w-xl mx-auto mb-8 font-sans">
+          We explain the manipulation tactics and give safe next steps.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            href="/check"
-            className="px-8 py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-teal-600 text-navy-950 text-lg font-bold font-sans shadow-[0_4px_24px_rgba(46,196,182,0.35),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_4px_32px_rgba(46,196,182,0.5)] transition-shadow"
-          >
-            Check a Suspicious Message
-          </Link>
-          <Link
-            href="/simulator"
-            className="px-8 py-4 rounded-2xl border-2 border-teal-500/30 text-teal-500 text-lg font-bold font-sans hover:bg-teal-500/8 transition-colors"
-          >
-            Try the Simulator
-          </Link>
+      </section>
+
+      <HomepageCheckDemo />
+
+      {/* Trust strip */}
+      <section className="max-w-3xl mx-auto px-4 sm:px-6 py-6 border-t border-navy-600/40">
+        <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-navy-400 font-sans">
+          <span>No SSNs. No bank logins. Redaction on by default.</span>
+          <span>Free: 5 checks per day.</span>
+          <span>Not affiliated with banks or government.</span>
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-16">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <StatCard
-            value={3.4}
-            suffix="B"
-            label="Lost to elder fraud (FBI 2024)"
-            color="text-danger-500"
-          />
-          <StatCard
-            value={900}
-            suffix="%"
-            label="Toll scam increase in 2025"
-            color="text-gold-500"
-          />
-          <StatCard
-            value={40}
-            suffix="x"
-            label="More lost per incident by seniors"
-            color="text-danger-500"
-          />
-          <StatCard
-            value={0}
-            suffix=""
-            label="Tools that train — until now"
-            color="text-teal-500"
-          />
-        </div>
-      </section>
-
-      {/* Problem statement */}
-      <section className="max-w-3xl mx-auto px-4 sm:px-6 pb-20">
-        <div className="bg-danger-500/8 border border-danger-500/20 rounded-2xl p-6 sm:p-8">
-          <h2 className="text-2xl font-extrabold text-navy-200 mb-4">
-            The Problem Nobody Is Solving
-          </h2>
-          <p className="text-navy-400 leading-relaxed mb-4">
-            Every scam detection tool works the same way: paste a message, get a
-            verdict. But by the time you suspect something is a scam, you already
-            have some instinct telling you it&apos;s wrong.
-          </p>
-          <p className="text-navy-400 leading-relaxed mb-6">
-            The real danger is the scams you{" "}
-            <span className="text-danger-500 font-bold">don&apos;t</span>{" "}
-            suspect. The ones that feel real. The ones that trigger fear, love, or
-            urgency before your rational brain can catch up.
-          </p>
-          <div className="space-y-3">
-            {[
-              {
-                title: "No proactive training",
-                desc: "Nobody is building the muscle memory to spot manipulation in real time.",
-              },
-              {
-                title: "No community intelligence",
-                desc: "Scams spread locally but no tool surfaces real-time reports from your area.",
-              },
-              {
-                title: "No family coordination",
-                desc: "Adult children worry but have no shared dashboard to keep parents safe.",
-              },
-            ].map((item, i) => (
+      {/* How it works */}
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        <h2 className="text-2xl font-bold text-navy-200 mb-8 font-sans text-center">
+          How it works
+        </h2>
+        <div className="grid sm:grid-cols-3 gap-6">
+          {STEPS.map((step, i) => {
+            const Icon = step.icon;
+            return (
               <div
                 key={i}
-                className="flex gap-3 items-start bg-navy-950/50 rounded-xl p-4"
+                className="card-flat rounded-card p-6 text-center"
               >
-                <span className="text-danger-500 font-bold font-sans text-lg mt-0.5">
-                  {i + 1}.
-                </span>
-                <div>
-                  <span className="font-bold text-navy-200">{item.title}.</span>{" "}
-                  <span className="text-navy-400">{item.desc}</span>
+                <div className="w-12 h-12 rounded-[var(--radius)] bg-teal-500/12 flex items-center justify-center mx-auto mb-4">
+                  <Icon className="w-6 h-6 text-teal-500" aria-hidden />
                 </div>
+                <h3 className="text-lg font-bold text-navy-200 mb-2 font-sans">
+                  {step.title}
+                </h3>
+                <p className="text-sm text-navy-400 leading-relaxed font-sans">
+                  {step.description}
+                </p>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </section>
 
-      {/* Features */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-20">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-navy-200 mb-3">
-            Not Just Detection.{" "}
-            <span className="text-teal-500">Defense Training.</span>
-          </h2>
-          <p className="text-navy-400 max-w-lg mx-auto">
-            SaveFromScam is a scam fitness gym. The best protection isn&apos;t a
-            filter &mdash; it&apos;s a trained human who can feel when something is
-            wrong.
+      {/* Top scam patterns */}
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+        <h2 className="text-xl font-bold text-navy-200 mb-6 font-sans text-center">
+          Top scam patterns we catch
+        </h2>
+        <div className="flex flex-wrap justify-center gap-2">
+          {SCAM_PATTERNS.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={i}
+                className="flex items-center gap-2 bg-navy-700 text-navy-200 rounded-full px-4 py-2 text-sm font-sans"
+              >
+                <Icon className="w-4 h-4 text-navy-400" aria-hidden />
+                {item.label}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Credibility */}
+      <section className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+        <div className="card-flat rounded-card p-6 text-center">
+          <p className="text-sm text-navy-400 leading-relaxed font-sans mb-4">
+            Built to help older adults and families. We redact phone, email, and
+            SSNs before saving. Not affiliated with banks or government.
+          </p>
+          <p className="text-xs text-navy-500 font-sans">
+            Built for the 3.4B lost to elder fraud and the families who want to
+            prevent it.
           </p>
         </div>
-
-        <div className="grid sm:grid-cols-2 gap-4">
-          <FeatureCard
-            number={1}
-            icon={"\u{1F3AE}"}
-            title="Scam Simulator"
-            description="Experience realistic scam scenarios safely. Spot red flags, make your call, and build instincts through gamified training with XP and streaks."
-          />
-          <FeatureCard
-            number={2}
-            icon={"\u{1F50D}"}
-            title="Scam Check AI"
-            description="Paste any suspicious text, email, or URL. Get an instant breakdown of manipulation tactics, red flags, and clear next steps."
-          />
-          <FeatureCard
-            number={3}
-            icon={"\u{1F465}"}
-            title="Community Alerts"
-            description="See what scams are hitting your neighborhood right now. Location-aware, crowdsourced, and verified by the community."
-          />
-          <FeatureCard
-            number={4}
-            icon={"\u{1F6E1}\uFE0F"}
-            title="Scam Score"
-            description="Get a personal risk profile from 0-100. Track your improvement and see exactly which scam types you're most vulnerable to."
-          />
-        </div>
-
-        <div className="mt-4 bg-gradient-to-r from-teal-500/8 to-gold-500/8 rounded-2xl p-6 border border-teal-500/15">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gold-500/15 flex items-center justify-center text-2xl shrink-0">
-              {"\u{1F468}\u200D\u{1F469}\u200D\u{1F467}\u200D\u{1F466}"}
-            </div>
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="text-xs text-teal-500 font-bold font-sans">
-                  05
-                </div>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-gold-500 text-navy-950 font-extrabold font-sans">
-                  PREMIUM
-                </span>
-              </div>
-              <h3 className="text-lg font-bold text-navy-200 mb-2">
-                Family Dashboard
-              </h3>
-              <p className="text-sm text-navy-400 leading-relaxed">
-                Connect with family members in a shared safety net. See each
-                other&apos;s Scam Scores, get alerts when scams trend in a loved
-                one&apos;s area, and stay connected on protection. All opt-in and
-                transparent.
-              </p>
-            </div>
-          </div>
-        </div>
       </section>
 
-      {/* Pricing */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-extrabold text-navy-200 mb-3">
-            Free to Start. Affordable to Protect Your Whole Family.
+      {/* Signup CTA */}
+      <section className="max-w-2xl mx-auto px-4 sm:px-6 py-12 pb-16">
+        <div className="card-flat rounded-card p-8 text-center">
+          <h2 className="text-xl font-bold text-navy-200 mb-3 font-sans">
+            Create a free account to save results and track your Scam Score
           </h2>
-          <p className="text-navy-400">
-            The free tier delivers real value. Premium unlocks everything.
-          </p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 gap-4">
-          {/* Free */}
-          <div className="bg-navy-900/70 rounded-2xl p-6 border border-navy-700/50">
-            <div className="text-sm font-bold font-sans text-navy-400 mb-1">
-              Free
-            </div>
-            <div className="text-3xl font-extrabold text-navy-200 mb-4 font-sans">
-              $0
-            </div>
-            <ul className="space-y-3 text-sm text-navy-400 mb-6">
-              {[
-                "5 Scam Checks per day",
-                "1 simulator scenario per day",
-                "Basic Scam Score",
-                "View community alerts",
-                "General safety tips",
-              ].map((item, i) => (
-                <li key={i} className="flex gap-2">
-                  <span className="text-teal-500">&#10003;</span> {item}
-                </li>
-              ))}
-            </ul>
-            <Link
-              href="/check"
-              className="block text-center w-full py-3 rounded-xl border-2 border-teal-500/30 text-teal-500 font-bold font-sans hover:bg-teal-500/8 transition-colors"
-            >
-              Get Started Free
-            </Link>
-          </div>
-
-          {/* Premium */}
-          <div className="bg-gradient-to-b from-teal-500/10 to-navy-900/70 rounded-2xl p-6 border border-teal-500/25 relative">
-            <div className="absolute -top-3 right-6 text-[10px] px-3 py-1 rounded-full bg-teal-500 text-navy-950 font-extrabold font-sans tracking-wide">
-              BEST VALUE
-            </div>
-            <div className="text-sm font-bold font-sans text-teal-500 mb-1">
-              Premium
-            </div>
-            <div className="text-3xl font-extrabold text-navy-200 mb-1 font-sans">
-              $9.00
-              <span className="text-base font-normal text-navy-500">/mo</span>
-            </div>
-            <div className="text-xs text-navy-500 mb-4 font-sans">
-              Covers up to 5 family members.
-            </div>
-            <ul className="space-y-3 text-sm text-navy-300 mb-6">
-              {[
-                "Unlimited Scam Checks",
-                "Full simulator library + new weekly",
-                "Detailed Scam Score + monitoring",
-                "Post, vote, & local alert notifications",
-                "Family Dashboard (up to 5 members)",
-                "Weekly personalized scam briefing",
-                "Priority AI analysis",
-                "State-specific legal guidance",
-              ].map((item, i) => (
-                <li key={i} className="flex gap-2">
-                  <span className="text-teal-500">&#10003;</span> {item}
-                </li>
-              ))}
-            </ul>
-            <Link
-              href="/pricing"
-              className="w-full block text-center py-3 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 text-navy-950 font-bold font-sans shadow-[0_4px_20px_rgba(46,196,182,0.3)] hover:shadow-[0_4px_28px_rgba(46,196,182,0.45)] transition-shadow cursor-pointer"
-            >
-              Start Premium
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Bottom CTA */}
-      <section className="max-w-3xl mx-auto px-4 sm:px-6 pb-20">
-        <div className="bg-navy-900/80 rounded-3xl p-8 sm:p-12 text-center border border-teal-500/15">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-navy-200 mb-4">
-            Make scam awareness as normal as locking your front door.
-          </h2>
-          <p className="text-navy-400 leading-relaxed mb-8 max-w-lg mx-auto">
-            Every simulator session completed, every scam reported, every family
-            connected makes the world a little safer for the people who need it
-            most.
+          <p className="text-sm text-navy-400 mb-6 font-sans">
+            Free plan: 5 checks per day, simulator, and community alerts.
           </p>
           <Link
-            href="/check"
-            className="inline-block px-8 py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-teal-600 text-navy-950 text-lg font-bold font-sans shadow-[0_4px_24px_rgba(46,196,182,0.35)] hover:shadow-[0_4px_32px_rgba(46,196,182,0.5)] transition-shadow"
+            href="/auth"
+            className="btn-primary inline-block px-8 py-3 text-base font-sans"
           >
-            Check Your First Message Free
+            Create free account
           </Link>
+          <p className="mt-4 text-xs text-navy-500 font-sans">
+            Or see <Link href="/pricing" className="text-teal-500 hover:underline">Free Plan &amp; Premium</Link> details.
+          </p>
         </div>
       </section>
 
+      <LeadMagnet />
+
       {/* Footer */}
-      <footer className="border-t border-teal-500/10 py-8">
+      <footer className="border-t border-navy-600/40 py-8">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-sm text-navy-500 font-sans">
             &copy; 2026 SaveFromScam.com. All rights reserved.

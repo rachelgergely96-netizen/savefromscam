@@ -1,5 +1,6 @@
 import "./globals.css";
 import Header from "@/components/Header";
+import StickyMobileCTA from "@/components/StickyMobileCTA";
 import { AuthProvider } from "@/components/AuthContext";
 
 export const metadata = {
@@ -20,22 +21,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="min-h-screen bg-navy-950 antialiased">
-        {/* Subtle grid texture */}
-        <div className="fixed inset-0 bg-grid-pattern pointer-events-none" />
+        {/* Solid background with very subtle texture */}
+        <div className="fixed inset-0 bg-navy-950 pointer-events-none" />
+        <div className="fixed inset-0 bg-grid-pattern pointer-events-none opacity-60" />
 
-        {/* Background gradient */}
-        <div
-          className="fixed inset-0 pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)",
-          }}
-        />
-
-        <div className="relative z-10">
+        <div className="relative z-10 pb-20 sm:pb-0">
           <AuthProvider>
             <Header />
             {children}
+            <StickyMobileCTA />
           </AuthProvider>
         </div>
       </body>

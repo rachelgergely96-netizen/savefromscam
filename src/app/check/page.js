@@ -5,6 +5,63 @@ import Link from "next/link";
 import { useAuth } from "@/components/AuthContext";
 import { SAMPLE_SCAM_TEXT } from "@/data/scenarios";
 
+function ShareCard({ result }) {
+  const [copied, setCopied] = useState(false);
+  const title = "SaveFromScam result";
+  const text = [
+    result?.verdict,
+    result?.confidence != null ? `${result.confidence}% confidence` : "",
+    result?.tactics?.slice(0, 2).map((t) => t.name).join(", "),
+    result?.actions?.[0] ? `What to do: ${result.actions[0]}` : "",
+    "Check your own: https://savefromscam.com/check",
+  ]
+    .filter(Boolean)
+    .join(" — ");
+
+  async function handleShare() {
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          text,
+          url: "https://savefromscam.com/check",
+        });
+      } catch (e) {
+        if (e.name !== "AbortError") copyToClipboard();
+      }
+    } else {
+      copyToClipboard();
+    }
+  }
+
+  function copyToClipboard() {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  return (
+    <div className="card-flat rounded-card p-5 border-teal-500/20">
+      <div className="text-xs font-bold text-navy-400 uppercase tracking-wider font-sans mb-2">
+        Share this result
+      </div>
+      <p className="text-sm text-navy-300 font-sans mb-3 line-clamp-3">
+        {result?.verdict} ({result?.confidence}%).{" "}
+        {result?.tactics?.slice(0, 2).map((t) => t.name).join(", ")}.{" "}
+        {result?.actions?.[0] || "See full result at savefromscam.com/check"}
+      </p>
+      <button
+        type="button"
+        onClick={handleShare}
+        className="btn-secondary px-4 py-2 text-sm font-sans cursor-pointer"
+      >
+        {copied ? "Copied!" : "Share or copy link"}
+      </button>
+    </div>
+  );
+}
+
 export default function ScamCheck() {
   const { user, session, loading } = useAuth();
   const [checkText, setCheckText] = useState("");
@@ -13,6 +70,9 @@ export default function ScamCheck() {
   const [error, setError] = useState(null);
   const [limitReached, setLimitReached] = useState(false);
   const [usage, setUsage] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState(null);
 
   const fetchUsage = useCallback(async () => {
     if (!session?.access_token) return;
@@ -69,6 +129,8 @@ export default function ScamCheck() {
       }
 
       setResult(data);
+      setSaved(false);
+      setSaveError(null);
       fetchUsage();
     } catch (err) {
       setError(err.message);
@@ -84,14 +146,14 @@ export default function ScamCheck() {
       : "text-teal-500";
 
   const verdictBg = result?.verdict?.includes("HIGH")
-    ? "from-danger-500/15 to-danger-500/5 border-danger-500/30"
+    ? "border-danger-500/30 bg-danger-500/5"
     : result?.verdict?.includes("MEDIUM")
-      ? "from-gold-500/15 to-gold-500/5 border-gold-500/30"
-      : "from-teal-500/15 to-teal-500/5 border-teal-500/30";
+      ? "border-gold-500/30 bg-gold-500/5"
+      : "border-teal-500/30 bg-teal-500/5";
 
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-      <h1 className="text-3xl font-extrabold text-navy-200 mb-2">
+      <h1 className="text-3xl font-bold text-navy-200 mb-2 font-sans">
         Scam Check
       </h1>
       <p className="text-navy-400 mb-8 leading-relaxed">
@@ -100,7 +162,7 @@ export default function ScamCheck() {
       </p>
 
       {!loading && !user && (
-        <div className="bg-gold-500/10 border border-gold-500/25 rounded-2xl p-4 mb-6">
+        <div className="card-flat rounded-card p-4 mb-6 border-gold-500/25 bg-gold-500/5">
           <p className="text-navy-200 text-sm font-sans">
             Sign in to use Scam Check. Free accounts get 5 checks per day.
           </p>
@@ -122,34 +184,33 @@ export default function ScamCheck() {
       )}
 
       {/* Input area */}
-      <div className="bg-navy-900/70 rounded-2xl p-6 border border-teal-500/10 mb-6">
+      <div className="card-flat rounded-card p-6 mb-6">
         <textarea
+          id="check-textarea"
           value={checkText}
           onChange={(e) => setCheckText(e.target.value)}
           placeholder="Paste the suspicious message here..."
-          className="w-full min-h-[160px] bg-navy-950/60 border border-navy-600/30 rounded-xl p-4 text-navy-300 text-base leading-relaxed resize-y outline-none focus:border-teal-500/40 transition-colors placeholder:text-navy-600"
+          className="w-full min-h-[160px] bg-navy-950/60 border border-navy-600/40 rounded-[var(--radius)] p-4 text-navy-300 text-base leading-relaxed resize-y outline-none focus:border-teal-500/50 transition-colors placeholder:text-navy-600 font-sans"
         />
         <div className="flex gap-3 mt-4 flex-wrap">
           <button
+            type="button"
             onClick={() => {
               setCheckText(SAMPLE_SCAM_TEXT);
               setResult(null);
             }}
-            className="px-4 py-2 rounded-lg border border-navy-600/30 text-navy-500 text-xs font-sans cursor-pointer hover:border-navy-500/50 hover:text-navy-400 transition-colors"
+            className="btn-secondary px-4 py-2 text-sm font-sans cursor-pointer"
           >
             Try sample scam
           </button>
           <div className="flex-1" />
           <button
+            type="button"
             onClick={runScamCheck}
             disabled={analyzing || !checkText.trim() || !user}
-            className={`px-7 py-3 rounded-xl font-bold text-base font-sans cursor-pointer transition-all ${
-              analyzing || !checkText.trim() || !user
-                ? "bg-navy-700 text-navy-500 cursor-not-allowed"
-                : "bg-gradient-to-r from-teal-500 to-teal-600 text-navy-950 shadow-[0_4px_20px_rgba(46,196,182,0.3)] hover:shadow-[0_4px_28px_rgba(46,196,182,0.45)]"
-            }`}
+            className="btn-primary px-7 py-3 text-base font-sans cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {analyzing ? "Analyzing..." : !user ? "Sign in to check" : "Check This"}
+            {analyzing ? "Analyzing…" : !user ? "Sign in to check" : "Check this"}
           </button>
         </div>
       </div>
@@ -169,24 +230,25 @@ export default function ScamCheck() {
 
       {/* Error state */}
       {error && (
-        <div className="bg-danger-500/10 border border-danger-500/25 rounded-2xl p-6 text-center">
-          <div className="text-danger-500 font-bold mb-2">
-            {limitReached ? "Daily limit reached" : "Analysis Failed"}
+        <div className="card-flat rounded-card p-6 text-center border-danger-500/30 bg-danger-500/5">
+          <div className="text-danger-500 font-bold mb-2 font-sans">
+            {limitReached ? "Daily limit reached" : "Analysis failed"}
           </div>
-          <div className="text-navy-400 text-sm">{error}</div>
+          <div className="text-navy-400 text-sm font-sans">{error}</div>
           {limitReached ? (
             <Link
               href="/pricing"
-              className="inline-block mt-4 px-6 py-2 rounded-lg bg-teal-500 text-navy-950 text-sm font-bold font-sans hover:bg-teal-400 transition-colors"
+              className="inline-block mt-4 btn-primary px-6 py-2 text-sm font-sans"
             >
               Upgrade to Premium
             </Link>
           ) : (
             <button
+              type="button"
               onClick={runScamCheck}
-              className="mt-4 px-6 py-2 rounded-lg bg-danger-500/15 text-danger-500 text-sm font-bold font-sans cursor-pointer hover:bg-danger-500/25 transition-colors"
+              className="mt-4 btn-secondary px-6 py-2 text-sm font-sans cursor-pointer"
             >
-              Try Again
+              Try again
             </button>
           )}
         </div>
@@ -197,14 +259,14 @@ export default function ScamCheck() {
         <div className="space-y-4">
           {/* Verdict banner */}
           <div
-            className={`bg-gradient-to-r ${verdictBg} border rounded-2xl p-6 text-center`}
+            className={`card-flat rounded-card p-6 text-center border ${verdictBg}`}
           >
             <div
               className={`text-sm tracking-widest font-bold font-sans mb-2 ${verdictColor}`}
             >
               {result.verdict}
             </div>
-            <div className={`text-5xl font-extrabold font-sans ${verdictColor}`}>
+            <div className={`text-5xl font-bold font-sans ${verdictColor}`}>
               {result.confidence}%
             </div>
             <div className="text-xs text-navy-400 font-sans mt-1">
@@ -212,13 +274,16 @@ export default function ScamCheck() {
             </div>
           </div>
 
+          {/* Share card — right after verdict */}
+          <ShareCard result={result} />
+
           {/* Summary */}
           {result.summary && (
-            <div className="bg-navy-900/70 rounded-2xl p-5 border border-teal-500/10">
-              <div className="text-sm font-bold text-navy-200 mb-2">
+            <div className="card-flat rounded-card p-5">
+              <div className="text-xs font-bold text-navy-400 uppercase tracking-wider font-sans mb-2">
                 Summary
               </div>
-              <p className="text-sm text-navy-400 leading-relaxed">
+              <p className="text-sm text-navy-400 leading-relaxed font-sans">
                 {result.summary}
               </p>
             </div>
@@ -226,13 +291,13 @@ export default function ScamCheck() {
 
           {/* Tactics */}
           <div>
-            <div className="text-base font-bold text-navy-200 mb-3">
-              Manipulation Tactics Detected:
+            <div className="text-xs font-bold text-navy-400 uppercase tracking-wider font-sans mb-3">
+              Manipulation tactics detected
             </div>
             {result.tactics?.map((t, i) => (
               <div
                 key={i}
-                className="bg-navy-900/70 rounded-xl p-4 border border-teal-500/10 mb-2.5"
+                className="card-flat rounded-card p-4 mb-2.5"
               >
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-bold text-navy-200">
@@ -267,9 +332,9 @@ export default function ScamCheck() {
 
           {/* Recommended actions */}
           {result.actions && (
-            <div className="bg-teal-500/6 rounded-2xl p-5 border border-teal-500/15">
-              <div className="text-sm font-bold text-teal-500 mb-3">
-                Recommended Actions:
+            <div className="card-flat rounded-card p-5 border-teal-500/20 bg-teal-500/5">
+              <div className="text-xs font-bold text-teal-500 uppercase tracking-wider font-sans mb-3">
+                Recommended actions
               </div>
               {result.actions.map((a, i) => (
                 <div
@@ -279,13 +344,84 @@ export default function ScamCheck() {
                   <span className="text-teal-500 font-bold font-sans text-sm">
                     {i + 1}.
                   </span>
-                  <span className="text-sm text-navy-400 leading-relaxed">
+                  <span className="text-sm text-navy-400 leading-relaxed font-sans">
                     {a}
                   </span>
                 </div>
               ))}
             </div>
           )}
+
+          {/* Post-result actions */}
+          <div className="flex flex-wrap gap-3 pt-2">
+            {!user ? (
+              <Link
+                href="/auth"
+                className="btn-primary px-5 py-2.5 text-sm font-sans"
+              >
+                Create account to save
+              </Link>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (!session?.access_token || !result || saving || saved) return;
+                    setSaving(true);
+                    setSaveError(null);
+                    try {
+                      const res = await fetch("/api/check-history", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                          Authorization: `Bearer ${session.access_token}`,
+                        },
+                        body: JSON.stringify({
+                          verdict: result.verdict,
+                          confidence: result.confidence,
+                          summary: result.summary,
+                          tactics: result.tactics,
+                          actions: result.actions,
+                        }),
+                      });
+                      const data = await res.json().catch(() => ({}));
+                      if (res.ok) setSaved(true);
+                      else setSaveError(data.error || "Could not save");
+                    } catch (e) {
+                      setSaveError("Could not save");
+                    } finally {
+                      setSaving(false);
+                    }
+                  }}
+                  disabled={saving || saved}
+                  className="btn-secondary px-5 py-2.5 text-sm font-sans cursor-pointer disabled:opacity-60"
+                >
+                  {saved ? "Saved" : saving ? "Saving…" : "Save to your history"}
+                </button>
+                {saveError && (
+                  <span className="text-xs text-danger-500 font-sans">{saveError}</span>
+                )}
+              </>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                setCheckText("");
+                setResult(null);
+                setError(null);
+                document.getElementById("check-textarea")?.focus();
+              }}
+              className="btn-secondary px-5 py-2.5 text-sm font-sans cursor-pointer"
+            >
+              Run another check
+            </button>
+            <Link
+              href="/simulator"
+              className="btn-secondary px-5 py-2.5 text-sm font-sans inline-flex items-center"
+            >
+              Simulate this scam type
+            </Link>
+          </div>
         </div>
       )}
     </main>
