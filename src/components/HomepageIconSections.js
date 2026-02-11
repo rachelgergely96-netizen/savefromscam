@@ -43,7 +43,7 @@ export default function HomepageIconSections() {
     <>
       {/* How it works */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-        <h2 className="text-2xl font-bold text-navy-200 mb-8 font-sans text-center">
+        <h2 className="text-2xl font-bold text-navy-900 mb-8 font-sans text-center">
           How it works
         </h2>
         <div className="grid sm:grid-cols-3 gap-6">
@@ -55,12 +55,12 @@ export default function HomepageIconSections() {
                 className="card-flat rounded-card p-6 text-center"
               >
                 <div className="w-12 h-12 rounded-[var(--radius)] bg-teal-500/12 flex items-center justify-center mx-auto mb-4">
-                  <Icon className="w-6 h-6 text-teal-500" aria-hidden />
+                  <Icon className="w-6 h-6 text-teal-600" aria-hidden />
                 </div>
-                <h3 className="text-lg font-bold text-navy-200 mb-2 font-sans">
+                <h3 className="text-lg font-bold text-navy-900 mb-2 font-sans">
                   {step.title}
                 </h3>
-                <p className="text-sm text-navy-400 leading-relaxed font-sans">
+                <p className="text-base text-navy-700 leading-relaxed font-sans">
                   {step.description}
                 </p>
               </div>
@@ -71,7 +71,7 @@ export default function HomepageIconSections() {
 
       {/* Top scam patterns */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-        <h2 className="text-xl font-bold text-navy-200 mb-6 font-sans text-center">
+        <h2 className="text-xl font-bold text-navy-900 mb-6 font-sans text-center">
           Top scam patterns we catch
         </h2>
         <div className="flex flex-wrap justify-center gap-2">
@@ -80,9 +80,9 @@ export default function HomepageIconSections() {
             return (
               <div
                 key={i}
-                className="flex items-center gap-2 bg-navy-700 text-navy-200 rounded-full px-4 py-2 text-sm font-sans"
+                className="flex items-center gap-2 bg-sage-100 text-navy-900 rounded-full px-4 py-2 text-sm font-semibold font-sans border border-sage-300"
               >
-                <Icon className="w-4 h-4 text-navy-400" aria-hidden />
+                <Icon className="w-4 h-4 text-sage-600" aria-hidden />
                 {item.label}
               </div>
             );
