@@ -7,6 +7,21 @@ export const runtime = "nodejs";
 
 const FREE_CHECKS_PER_DAY = 5;
 
+function extractJSON(text) {
+  // Try to extract JSON from markdown code blocks or plain text
+  const jsonMatch = text.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+  if (jsonMatch) {
+    return JSON.parse(jsonMatch[1]);
+  }
+  // Try to find JSON object in the text
+  const objectMatch = text.match(/\{[\s\S]*\}/);
+  if (objectMatch) {
+    return JSON.parse(objectMatch[0]);
+  }
+  // If no match, try parsing the whole text
+  return JSON.parse(text);
+}
+
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
@@ -101,7 +116,7 @@ ${text}
           },
         ],
       });
-      const result = JSON.parse(message.content[0].text);
+      const result = extractJSON(message.content[0].text);
       await supabaseAdmin.from("anon_homepage_checks").insert({
         ip_hash: ipHash,
         created_at: todayUtc,
@@ -201,7 +216,7 @@ ${text}
 
     const message = await client.messages.create({
       // Use a stable, current model identifier
-      model: "claude-3-sonnet-20240229",
+      model: "claude-opus-4-6",
       max_tokens: 1024,
       messages: [
         {
@@ -234,7 +249,7 @@ ${text}
     });
 
     const responseText = message.content[0].text;
-    const result = JSON.parse(responseText);
+    const result = extractJSON(responseText);
 
     const newChecksUsed = checksUsedToday + 1;
     const newResetAt = !resetAtUtc || resetAtUtc < todayUtc ? now.toISOString() : profile?.checks_reset_at;
