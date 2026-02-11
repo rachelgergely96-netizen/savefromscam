@@ -7,6 +7,7 @@ const AuthContext = createContext({
   user: null,
   loading: true,
   signInWithMagicLink: async () => {},
+  signInWithGoogle: async () => {},
   signOut: async () => {},
 });
 
@@ -63,13 +64,26 @@ export function AuthProvider({ children }) {
     return { error };
   }
 
+  async function signInWithGoogle() {
+    if (!supabase) return { error: new Error("Supabase not configured") };
+    const redirectTo =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/auth/callback`
+        : undefined;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo },
+    });
+    return { error };
+  }
+
   async function signOut() {
     if (!supabase) return;
     await supabase.auth.signOut();
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithMagicLink, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signInWithMagicLink, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   );
