@@ -83,7 +83,7 @@ export default function Home() {
           </span>
           <span className="flex items-center gap-2">
             <CheckCircle className="w-5 h-5 text-teal-600 flex-shrink-0" />
-            Free: 5 checks per day.
+            Free: 1 check per day.
           </span>
           <span className="flex items-center gap-2">
             <Info className="w-5 h-5 text-navy-500 flex-shrink-0" />
@@ -115,7 +115,7 @@ export default function Home() {
             Create a free account to save results and track your Scam Score
           </h2>
           <p className="text-base text-navy-700 mb-6 font-sans">
-            Free plan: 5 checks per day, simulator, and community alerts.
+            Free plan: 1 check per day, simulator, and community alerts.
           </p>
           <Link
             href="/auth"

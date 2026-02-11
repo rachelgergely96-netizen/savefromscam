@@ -28,8 +28,8 @@ const FEATURES = [
     color: "sage",
   },
   {
-    title: "5 Free Checks Daily",
-    description: "No credit card required. Check 5 messages per day free, forever.",
+    title: "1 Free Check Daily",
+    description: "No credit card required. Check 1 message per day free, forever.",
     icon: Clock,
     color: "teal",
   },
