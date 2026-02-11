@@ -1,34 +1,77 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy-950: #0f172a;
-  --color-navy-900: #1e293b;
-  --color-navy-800: #1e293b;
-  --color-navy-700: #334155;
-  --color-navy-600: #475569;
-  --color-navy-500: #64748b;
+  /* Primary Colors - Warmer navy for better readability */
+  --color-navy-950: #0f1729;
+  --color-navy-900: #1a2332;
+  --color-navy-800: #243142;
+  --color-navy-700: #364152;
+  --color-navy-600: #4b5768;
+  --color-navy-500: #6b7888;
   --color-navy-400: #94a3b8;
   --color-navy-300: #cbd5e1;
-  --color-navy-200: #e2e8f0;
-  --color-navy-100: #f1f5f9;
+  --color-navy-200: #e8edf4;
+  --color-navy-100: #f5f7fa;
 
+  /* Trust Teal - Enhanced contrast */
+  --color-teal-700: #158882;
   --color-teal-600: #1B9E93;
   --color-teal-500: #2EC4B6;
   --color-teal-400: #5dd4c8;
   --color-teal-300: #8ce3da;
+  --color-teal-100: #e0f7f5;
 
+  /* Warm Accent - Sage/Mint for trust signals */
+  --color-sage-600: #6b9080;
+  --color-sage-500: #88b09d;
+  --color-sage-400: #a4c3b2;
+  --color-sage-100: #eaf4f0;
+
+  /* Gold - Enhanced for warnings */
+  --color-gold-600: #d68a4d;
   --color-gold-500: #F4A261;
   --color-gold-400: #fbbf24;
 
+  /* Danger - Enhanced for high risk */
+  --color-danger-600: #c62935;
   --color-danger-500: #E63946;
   --color-danger-400: #ff6b6b;
 
-  --font-serif: "Georgia", "Times New Roman", serif;
-  --font-sans: "Trebuchet MS", "Segoe UI", sans-serif;
+  /* Warm White for key backgrounds */
+  --color-warm-white: #fafaf8;
 
-  /* Design tokens: single radius, shadow, 8pt spacing */
+  /* Font families - System fonts for better legibility */
+  --font-serif: "Georgia", "Times New Roman", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+
+  /* Typography scale - 18px base for older adults */
+  --font-xs: 14px;
+  --font-sm: 16px;
+  --font-base: 18px;
+  --font-lg: 20px;
+  --font-xl: 24px;
+  --font-2xl: 30px;
+  --font-3xl: 36px;
+  --font-4xl: 44px;
+  --font-5xl: 52px;
+
+  /* Line heights - increased for readability */
+  --leading-tight: 1.3;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+
+  /* Design tokens */
   --radius: 16px;
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.12);
+
+  /* Enhanced shadow system */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.18), 0 4px 8px rgba(0, 0, 0, 0.10);
+  --shadow-focus: 0 0 0 3px rgba(46, 196, 182, 0.25);
+  --shadow-trust: 0 4px 12px rgba(107, 144, 128, 0.15);
+
+  /* Spacing scale */
   --spacing-1: 8px;
   --spacing-2: 16px;
   --spacing-3: 24px;
@@ -39,7 +82,9 @@
 
 /* Base styles */
 body {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
+  font-size: var(--font-base);
+  line-height: var(--leading-normal);
   color: var(--color-navy-200);
   background: var(--color-navy-950);
 }
@@ -49,7 +94,7 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Spinner animation */
+/* Enhanced animations */
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -58,6 +103,75 @@ html {
 
 .animate-spin-slow {
   animation: spin 0.8s linear infinite;
+}
+
+/* Gentle pulse for loading states */
+@keyframes gentle-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.animate-gentle-pulse {
+  animation: gentle-pulse 2s ease-in-out infinite;
+}
+
+/* Fade in for results */
+@keyframes fade-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-slide-up 0.4s ease-out;
+}
+
+/* Animated dots for loading */
+@keyframes dot-bounce {
+  0%, 80%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+
+.animate-dot {
+  animation: dot-bounce 1.4s infinite;
+}
+
+/* Shimmer effect for trust badges */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
 }
 
 /* Slightly textured background (very subtle) */
@@ -70,36 +184,61 @@ html {
   background-size: 24px 24px;
 }
 
-/* Design system: flat card and primary button */
+/* Design system components */
 .rounded-card {
   border-radius: var(--radius);
 }
+
 .shadow-card {
   box-shadow: var(--shadow-card);
 }
+
+/* Enhanced button styles */
 .btn-primary {
-  background-color: var(--color-teal-500);
-  color: var(--color-navy-950);
+  background: linear-gradient(135deg, var(--color-teal-500) 0%, var(--color-teal-600) 100%);
+  color: white;
   font-weight: 700;
+  font-size: var(--font-base);
+  padding: 16px 32px;
   border-radius: var(--radius);
-  transition: box-shadow 0.15s ease, filter 0.15s ease;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  min-height: 52px;
 }
+
 .btn-primary:hover {
-  box-shadow: var(--shadow-card);
-  filter: brightness(1.05);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-1px);
+  filter: brightness(1.08);
 }
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus), var(--shadow-lg);
+}
+
 .btn-secondary {
   background-color: transparent;
-  color: var(--color-navy-200);
-  border: 1px solid rgba(71, 85, 105, 0.5);
+  color: var(--color-navy-300);
+  border: 2px solid var(--color-navy-600);
   border-radius: var(--radius);
   font-weight: 600;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  font-size: var(--font-sm);
+  padding: 12px 24px;
+  transition: all 0.2s ease;
+  min-height: 48px;
 }
+
 .btn-secondary:hover {
   border-color: var(--color-navy-500);
-  background-color: rgba(30, 41, 59, 0.5);
+  background-color: var(--color-navy-800);
 }
+
 .card-flat {
   background-color: var(--color-navy-900);
   border: 1px solid rgba(71, 85, 105, 0.4);
@@ -108,6 +247,26 @@ html {
 
 /* Focus styles for accessibility */
 *:focus-visible {
-  outline: 2px solid var(--color-teal-500);
+  outline: none;
+  box-shadow: var(--shadow-focus);
   outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .btn-primary {
+    border: 3px solid var(--color-navy-950);
+  }
+  .card-flat {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

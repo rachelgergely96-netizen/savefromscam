@@ -2,8 +2,11 @@
 
 import { useState, useCallback } from "react";
 import Link from "next/link";
+import { ShieldCheck, Loader2 } from "lucide-react";
 import { useAuth } from "@/components/AuthContext";
 import { SAMPLE_SCAM_TEXT } from "@/data/scenarios";
+import TrustBadge from "@/components/TrustBadge";
+import AnimatedDot from "@/components/AnimatedDot";
 
 export default function HomepageCheckDemo() {
   const { user, session } = useAuth();
@@ -75,21 +78,51 @@ export default function HomepageCheckDemo() {
   return (
     <section className="max-w-2xl mx-auto px-4 sm:px-6 pt-12 sm:pt-16 pb-8">
       <div className="card-flat rounded-card p-6 mb-6">
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Paste a suspicious message here..."
-          className="w-full min-h-[140px] bg-navy-950/60 border border-navy-600/40 rounded-[var(--radius)] p-4 text-navy-300 text-base leading-relaxed resize-y outline-none focus:border-teal-500/50 transition-colors placeholder:text-navy-600 font-sans"
-          disabled={analyzing}
-        />
+        {/* Trust indicators */}
+        <div className="flex flex-wrap items-center gap-2 mb-4">
+          <TrustBadge variant="secure" size="sm" />
+          <TrustBadge variant="private" size="sm" />
+          <TrustBadge variant="redacted" size="sm" />
+        </div>
+
+        {/* Enhanced textarea */}
+        <div className="relative">
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Paste a suspicious message here..."
+            className="w-full min-h-[180px] bg-warm-white border-2 border-sage-400/40 rounded-[var(--radius)] p-5 text-navy-900 text-lg leading-relaxed resize-y outline-none focus:border-teal-500 transition-all duration-200 placeholder:text-navy-500 font-sans shadow-lg"
+            style={{ boxShadow: 'var(--shadow-lg)' }}
+            disabled={analyzing}
+          />
+
+          {/* Character count */}
+          {text.length > 0 && (
+            <div className="absolute bottom-3 right-3 text-xs text-navy-600 bg-warm-white/90 px-2 py-1 rounded">
+              {text.length} characters
+            </div>
+          )}
+        </div>
+
+        {/* Enhanced buttons */}
         <div className="flex flex-wrap gap-3 mt-4">
           <button
             type="button"
             onClick={runCheck}
             disabled={analyzing || !text.trim()}
-            className="btn-primary px-6 py-3 text-base font-sans disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="btn-primary px-8 py-4 text-lg font-sans font-bold disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200"
           >
-            {analyzing ? "Analyzing…" : "Check this message"}
+            {analyzing ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Analyzing...
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5" />
+                Check this message
+              </span>
+            )}
           </button>
           <button
             type="button"
@@ -98,7 +131,7 @@ export default function HomepageCheckDemo() {
               setResult(null);
               setError(null);
             }}
-            className="btn-secondary px-4 py-2.5 text-sm font-sans cursor-pointer"
+            className="btn-secondary px-5 py-3.5 text-base font-sans cursor-pointer hover:bg-navy-800 transition-all duration-200"
           >
             Try a sample
           </button>
@@ -106,12 +139,12 @@ export default function HomepageCheckDemo() {
       </div>
 
       {error && (
-        <div className="card-flat rounded-card p-5 mb-6 border-danger-500/20 bg-danger-500/5">
-          <p className="text-navy-200 text-sm font-sans">{error}</p>
+        <div className="card-flat rounded-card p-5 mb-6 border-danger-500/20 bg-danger-500/5 animate-fade-in">
+          <p className="text-navy-200 text-base font-sans">{error}</p>
           {!user && (
             <Link
               href="/auth"
-              className="inline-block mt-3 text-teal-500 font-bold text-sm font-sans hover:underline"
+              className="inline-block mt-3 text-teal-500 font-bold text-base font-sans hover:underline"
             >
               Create account to check →
             </Link>
@@ -119,7 +152,7 @@ export default function HomepageCheckDemo() {
           {limitReached && user && (
             <Link
               href="/pricing"
-              className="inline-block mt-3 text-teal-500 font-bold text-sm font-sans hover:underline"
+              className="inline-block mt-3 text-teal-500 font-bold text-base font-sans hover:underline"
             >
               Upgrade to Premium →
             </Link>
@@ -128,36 +161,54 @@ export default function HomepageCheckDemo() {
       )}
 
       {analyzing && (
-        <div className="text-center py-10">
-          <div className="w-12 h-12 rounded-full mx-auto mb-4 border-2 border-teal-500/20 border-t-teal-500 animate-spin-slow" />
-          <p className="text-navy-400 text-sm font-sans">
-            Analyzing manipulation patterns…
-          </p>
+        <div className="text-center py-12">
+          {/* Animated pulse circle with gradient */}
+          <div className="relative w-16 h-16 mx-auto mb-5">
+            <div className="absolute inset-0 rounded-full bg-teal-500/20 animate-ping" />
+            <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-teal-500 to-sage-500 flex items-center justify-center shadow-lg">
+              <ShieldCheck className="w-8 h-8 text-white animate-gentle-pulse" />
+            </div>
+          </div>
+
+          {/* Progress steps */}
+          <div className="space-y-2">
+            <p className="text-navy-300 text-lg font-medium font-sans">
+              Analyzing message...
+            </p>
+            <div className="flex items-center justify-center gap-1.5">
+              <AnimatedDot delay={0} />
+              <AnimatedDot delay={200} />
+              <AnimatedDot delay={400} />
+            </div>
+            <p className="text-navy-400 text-base font-sans">
+              Checking manipulation patterns • Evaluating risk • Generating report
+            </p>
+          </div>
         </div>
       )}
 
       {result && !analyzing && (
-        <div className="space-y-4 mb-8">
+        <div className="space-y-4 mb-8 animate-fade-in">
           <div
             className={`card-flat rounded-card p-6 text-center border ${verdictBg}`}
           >
             <div className={`text-xs tracking-widest font-bold font-sans mb-1 ${verdictColor}`}>
               {result.verdict}
             </div>
-            <div className={`text-4xl font-bold font-sans ${verdictColor}`}>
+            <div className={`text-5xl font-bold font-sans ${verdictColor}`}>
               {result.confidence}%
             </div>
-            <div className="text-xs text-navy-400 font-sans mt-1">
+            <div className="text-sm text-navy-400 font-sans mt-1">
               confidence
             </div>
           </div>
 
           {result.summary && (
             <div className="card-flat rounded-card p-5">
-              <div className="text-xs font-bold text-navy-400 uppercase tracking-wider font-sans mb-2">
+              <div className="text-sm font-bold text-navy-400 uppercase tracking-wider font-sans mb-2">
                 Summary
               </div>
-              <p className="text-sm text-navy-300 leading-relaxed font-sans">
+              <p className="text-base text-navy-300 leading-relaxed font-sans">
                 {result.summary}
               </p>
             </div>
@@ -165,12 +216,12 @@ export default function HomepageCheckDemo() {
 
           {result.tactics?.length > 0 && (
             <div className="card-flat rounded-card p-5">
-              <div className="text-xs font-bold text-navy-400 uppercase tracking-wider font-sans mb-3">
+              <div className="text-sm font-bold text-navy-400 uppercase tracking-wider font-sans mb-3">
                 Tactics detected
               </div>
               <ul className="space-y-2">
                 {result.tactics.slice(0, 4).map((t, i) => (
-                  <li key={i} className="text-sm text-navy-300 font-sans">
+                  <li key={i} className="text-base text-navy-300 font-sans">
                     <span className="font-bold text-navy-200">{t.name}</span>
                     <span className="text-navy-500"> — {t.desc}</span>
                   </li>
@@ -181,10 +232,10 @@ export default function HomepageCheckDemo() {
 
           {result.actions?.length > 0 && (
             <div className="card-flat rounded-card p-5 border-teal-500/20 bg-teal-500/5">
-              <div className="text-xs font-bold text-teal-500 uppercase tracking-wider font-sans mb-2">
+              <div className="text-sm font-bold text-teal-500 uppercase tracking-wider font-sans mb-2">
                 What to do next
               </div>
-              <ol className="list-decimal list-inside space-y-1 text-sm text-navy-300 font-sans">
+              <ol className="list-decimal list-inside space-y-1 text-base text-navy-300 font-sans">
                 {result.actions.slice(0, 3).map((a, i) => (
                   <li key={i}>{a}</li>
                 ))}
@@ -196,7 +247,7 @@ export default function HomepageCheckDemo() {
             {!user ? (
               <Link
                 href="/auth"
-                className="btn-primary px-5 py-2.5 text-sm font-sans"
+                className="btn-primary px-5 py-2.5 text-base font-sans"
               >
                 Create account to save
               </Link>
@@ -204,7 +255,7 @@ export default function HomepageCheckDemo() {
               <>
                 <button
                   type="button"
-                  className="btn-secondary px-5 py-2.5 text-sm font-sans cursor-pointer disabled:opacity-60"
+                  className="btn-secondary px-5 py-2.5 text-base font-sans cursor-pointer disabled:opacity-60"
                   disabled={saving || saved}
                   onClick={async () => {
                     if (!session?.access_token || !result || saving || saved) return;
@@ -238,7 +289,7 @@ export default function HomepageCheckDemo() {
                   {saved ? "Saved" : saving ? "Saving…" : "Save to your history"}
                 </button>
                 {saveError && (
-                  <span className="text-xs text-danger-500 font-sans">{saveError}</span>
+                  <span className="text-sm text-danger-500 font-sans">{saveError}</span>
                 )}
               </>
             )}
@@ -249,13 +300,13 @@ export default function HomepageCheckDemo() {
                 setResult(null);
                 setError(null);
               }}
-              className="btn-secondary px-5 py-2.5 text-sm font-sans cursor-pointer"
+              className="btn-secondary px-5 py-2.5 text-base font-sans cursor-pointer"
             >
               Run another check
             </button>
             <Link
               href="/simulator"
-              className="btn-secondary px-5 py-2.5 text-sm font-sans inline-flex items-center"
+              className="btn-secondary px-5 py-2.5 text-base font-sans inline-flex items-center"
             >
               Simulate this scam type
             </Link>
