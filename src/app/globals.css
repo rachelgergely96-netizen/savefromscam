@@ -1,7 +1,14 @@
 @import "tailwindcss";
 
 @theme {
-  /* Primary Colors - Warmer navy for better readability */
+  /* Backgrounds - Light & Warm */
+  --color-warm-bg: #fafaf8;
+  --color-cream-bg: #f7f6f3;
+  --color-sage-light-bg: #f4f7f5;
+  --color-card-bg: #ffffff;
+  --color-card-border: #e5e7ea;
+
+  /* Navy palette - now for text on light backgrounds */
   --color-navy-950: #0f1729;
   --color-navy-900: #1a2332;
   --color-navy-800: #243142;
@@ -13,32 +20,36 @@
   --color-navy-200: #e8edf4;
   --color-navy-100: #f5f7fa;
 
-  /* Trust Teal - Enhanced contrast */
+  /* Trust Teal - Enhanced with more shades */
   --color-teal-700: #158882;
   --color-teal-600: #1B9E93;
   --color-teal-500: #2EC4B6;
   --color-teal-400: #5dd4c8;
   --color-teal-300: #8ce3da;
+  --color-teal-200: #b8ede7;
   --color-teal-100: #e0f7f5;
+  --color-teal-50: #f0faf9;
 
-  /* Warm Accent - Sage/Mint for trust signals */
+  /* Warm Accent - Sage/Mint with more shades */
   --color-sage-600: #6b9080;
   --color-sage-500: #88b09d;
   --color-sage-400: #a4c3b2;
+  --color-sage-300: #c4d5cc;
+  --color-sage-200: #e0ebe6;
   --color-sage-100: #eaf4f0;
+  --color-sage-50: #f4f7f5;
 
   /* Gold - Enhanced for warnings */
   --color-gold-600: #d68a4d;
   --color-gold-500: #F4A261;
   --color-gold-400: #fbbf24;
+  --color-gold-50: #fef6ed;
 
   /* Danger - Enhanced for high risk */
   --color-danger-600: #c62935;
   --color-danger-500: #E63946;
   --color-danger-400: #ff6b6b;
-
-  /* Warm White for key backgrounds */
-  --color-warm-white: #fafaf8;
+  --color-danger-50: #fef2f2;
 
   /* Font families - System fonts for better legibility */
   --font-serif: "Georgia", "Times New Roman", serif;
@@ -63,13 +74,13 @@
   /* Design tokens */
   --radius: 16px;
 
-  /* Enhanced shadow system */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.08);
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-card: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.18), 0 4px 8px rgba(0, 0, 0, 0.10);
+  /* Enhanced shadow system for light theme */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-card: 0 4px 8px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.10), 0 4px 8px rgba(0, 0, 0, 0.05);
   --shadow-focus: 0 0 0 3px rgba(46, 196, 182, 0.25);
-  --shadow-trust: 0 4px 12px rgba(107, 144, 128, 0.15);
+  --shadow-trust: 0 2px 8px rgba(107, 144, 128, 0.12);
 
   /* Spacing scale */
   --spacing-1: 8px;
@@ -80,13 +91,13 @@
   --spacing-6: 48px;
 }
 
-/* Base styles */
+/* Base styles - Light theme */
 body {
   font-family: var(--font-sans);
   font-size: var(--font-base);
   line-height: var(--leading-normal);
-  color: var(--color-navy-200);
-  background: var(--color-navy-950);
+  color: var(--color-navy-900);
+  background: var(--color-warm-bg);
 }
 
 /* Smooth scrolling */
@@ -178,7 +189,7 @@ html {
 .bg-grid-pattern {
   background-image: radial-gradient(
     circle at 1px 1px,
-    rgba(30, 41, 59, 0.4) 1px,
+    rgba(226, 232, 240, 0.3) 1px,
     transparent 0
   );
   background-size: 24px 24px;
@@ -193,7 +204,7 @@ html {
   box-shadow: var(--shadow-card);
 }
 
-/* Enhanced button styles */
+/* Enhanced button styles for light theme */
 .btn-primary {
   background: linear-gradient(135deg, var(--color-teal-500) 0%, var(--color-teal-600) 100%);
   color: white;
@@ -224,7 +235,7 @@ html {
 
 .btn-secondary {
   background-color: transparent;
-  color: var(--color-navy-300);
+  color: var(--color-navy-900);
   border: 2px solid var(--color-navy-600);
   border-radius: var(--radius);
   font-weight: 600;
@@ -235,14 +246,15 @@ html {
 }
 
 .btn-secondary:hover {
-  border-color: var(--color-navy-500);
-  background-color: var(--color-navy-800);
+  border-color: var(--color-teal-500);
+  background-color: var(--color-sage-light-bg);
 }
 
 .card-flat {
-  background-color: var(--color-navy-900);
-  border: 1px solid rgba(71, 85, 105, 0.4);
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
   border-radius: var(--radius);
+  box-shadow: var(--shadow-xs);
 }
 
 /* Focus styles for accessibility */

@@ -79,10 +79,10 @@ export default function HomepageCheckDemo() {
     <section className="max-w-2xl mx-auto px-4 sm:px-6 pt-12 sm:pt-16 pb-8">
       <div className="card-flat rounded-card p-6 mb-6">
         {/* Trust indicators */}
-        <div className="flex flex-wrap items-center gap-2 mb-4">
-          <TrustBadge variant="secure" size="sm" />
-          <TrustBadge variant="private" size="sm" />
-          <TrustBadge variant="redacted" size="sm" />
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+          <TrustBadge variant="secure" size="md" />
+          <TrustBadge variant="private" size="md" />
+          <TrustBadge variant="redacted" size="md" />
         </div>
 
         {/* Enhanced textarea */}
@@ -91,14 +91,14 @@ export default function HomepageCheckDemo() {
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Paste a suspicious message here..."
-            className="w-full min-h-[180px] bg-warm-white border-2 border-sage-400/40 rounded-[var(--radius)] p-5 text-navy-900 text-lg leading-relaxed resize-y outline-none focus:border-teal-500 transition-all duration-200 placeholder:text-navy-500 font-sans shadow-lg"
-            style={{ boxShadow: 'var(--shadow-lg)' }}
+            className="w-full min-h-[180px] bg-white border-2 border-sage-300 rounded-[var(--radius)] p-5 text-navy-900 text-lg leading-relaxed resize-y outline-none focus:border-teal-500 transition-all duration-200 placeholder:text-navy-500 font-sans"
+            style={{ boxShadow: 'var(--shadow-sm)' }}
             disabled={analyzing}
           />
 
           {/* Character count */}
           {text.length > 0 && (
-            <div className="absolute bottom-3 right-3 text-xs text-navy-600 bg-warm-white/90 px-2 py-1 rounded">
+            <div className="absolute bottom-3 right-3 text-xs text-navy-600 bg-white/95 px-2 py-1 rounded border border-sage-200">
               {text.length} characters
             </div>
           )}
@@ -139,8 +139,8 @@ export default function HomepageCheckDemo() {
       </div>
 
       {error && (
-        <div className="card-flat rounded-card p-5 mb-6 border-danger-500/20 bg-danger-500/5 animate-fade-in">
-          <p className="text-navy-200 text-base font-sans">{error}</p>
+        <div className="card-flat rounded-card p-5 mb-6 border-danger-400 bg-danger-50 animate-fade-in">
+          <p className="text-navy-900 text-base font-sans">{error}</p>
           {!user && (
             <Link
               href="/auth"
@@ -172,7 +172,7 @@ export default function HomepageCheckDemo() {
 
           {/* Progress steps */}
           <div className="space-y-2">
-            <p className="text-navy-300 text-lg font-medium font-sans">
+            <p className="text-navy-700 text-lg font-medium font-sans">
               Analyzing message...
             </p>
             <div className="flex items-center justify-center gap-1.5">
@@ -180,7 +180,7 @@ export default function HomepageCheckDemo() {
               <AnimatedDot delay={200} />
               <AnimatedDot delay={400} />
             </div>
-            <p className="text-navy-400 text-base font-sans">
+            <p className="text-navy-600 text-base font-sans">
               Checking manipulation patterns • Evaluating risk • Generating report
             </p>
           </div>
@@ -198,17 +198,17 @@ export default function HomepageCheckDemo() {
             <div className={`text-5xl font-bold font-sans ${verdictColor}`}>
               {result.confidence}%
             </div>
-            <div className="text-sm text-navy-400 font-sans mt-1">
+            <div className="text-sm text-navy-600 font-sans mt-1">
               confidence
             </div>
           </div>
 
           {result.summary && (
             <div className="card-flat rounded-card p-5">
-              <div className="text-sm font-bold text-navy-400 uppercase tracking-wider font-sans mb-2">
+              <div className="text-sm font-bold text-navy-600 uppercase tracking-wider font-sans mb-2">
                 Summary
               </div>
-              <p className="text-base text-navy-300 leading-relaxed font-sans">
+              <p className="text-base text-navy-700 leading-relaxed font-sans">
                 {result.summary}
               </p>
             </div>
@@ -216,14 +216,14 @@ export default function HomepageCheckDemo() {
 
           {result.tactics?.length > 0 && (
             <div className="card-flat rounded-card p-5">
-              <div className="text-sm font-bold text-navy-400 uppercase tracking-wider font-sans mb-3">
+              <div className="text-sm font-bold text-navy-600 uppercase tracking-wider font-sans mb-3">
                 Tactics detected
               </div>
               <ul className="space-y-2">
                 {result.tactics.slice(0, 4).map((t, i) => (
-                  <li key={i} className="text-base text-navy-300 font-sans">
-                    <span className="font-bold text-navy-200">{t.name}</span>
-                    <span className="text-navy-500"> — {t.desc}</span>
+                  <li key={i} className="text-base text-navy-700 font-sans">
+                    <span className="font-bold text-navy-900">{t.name}</span>
+                    <span className="text-navy-600"> — {t.desc}</span>
                   </li>
                 ))}
               </ul>
@@ -231,11 +231,11 @@ export default function HomepageCheckDemo() {
           )}
 
           {result.actions?.length > 0 && (
-            <div className="card-flat rounded-card p-5 border-teal-500/20 bg-teal-500/5">
-              <div className="text-sm font-bold text-teal-500 uppercase tracking-wider font-sans mb-2">
+            <div className="card-flat rounded-card p-5 border-teal-400 bg-teal-50">
+              <div className="text-sm font-bold text-teal-700 uppercase tracking-wider font-sans mb-2">
                 What to do next
               </div>
-              <ol className="list-decimal list-inside space-y-1 text-base text-navy-300 font-sans">
+              <ol className="list-decimal list-inside space-y-1 text-base text-navy-700 font-sans">
                 {result.actions.slice(0, 3).map((a, i) => (
                   <li key={i}>{a}</li>
                 ))}

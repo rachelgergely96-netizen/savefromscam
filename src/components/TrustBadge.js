@@ -32,26 +32,22 @@ export default function TrustBadge({ variant = "secure", size = "sm" }) {
   const sizeClasses = size === "sm"
     ? "px-3 py-2 text-sm gap-2"
     : size === "md"
-    ? "px-4 py-2.5 text-base gap-2"
+    ? "px-4 py-2.5 text-base gap-2.5"
     : "px-5 py-3 text-lg gap-3";
 
-  // Color classes based on variant
+  // Saturated colors with white text for high visibility on light backgrounds
   const colorClasses = variant === "secure" || variant === "redacted"
-    ? "bg-sage-100 border-sage-400/30 text-sage-700"
-    : "bg-teal-100 border-teal-400/30 text-teal-700";
-
-  const iconColorClass = variant === "secure" || variant === "redacted"
-    ? "text-sage-600"
-    : "text-teal-600";
+    ? "bg-sage-500 border-2 border-sage-600 text-white"
+    : "bg-teal-600 border-2 border-teal-700 text-white";
 
   return (
     <div
-      className={`inline-flex items-center border rounded-full whitespace-nowrap ${sizeClasses} ${colorClasses}`}
+      className={`inline-flex items-center rounded-full whitespace-nowrap ${sizeClasses} ${colorClasses} shadow-sm`}
       style={{ boxShadow: 'var(--shadow-trust)' }}
       title={badge.description}
     >
-      <Icon className={`w-4 h-4 flex-shrink-0 ${iconColorClass}`} />
-      <span className="font-medium">
+      <Icon className="w-4 h-4 flex-shrink-0 text-white" />
+      <span className="font-semibold">
         {badge.text}
       </span>
     </div>
