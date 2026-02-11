@@ -1,7 +1,6 @@
 import Link from "next/link";
 import HomepageCheckDemo from "@/components/HomepageCheckDemo";
 import HomepageIconSections from "@/components/HomepageIconSections";
-import LeadMagnet from "@/components/LeadMagnet";
 
 export default function Home() {
   return (
@@ -63,8 +62,6 @@ export default function Home() {
           </p>
         </div>
       </section>
-
-      <LeadMagnet />
 
       {/* Footer */}
       <footer className="border-t border-navy-600/40 py-8">
