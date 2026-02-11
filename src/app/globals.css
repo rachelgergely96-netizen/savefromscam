@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy-950: #0f172a;
+  --color-navy-900: #1e293b;
+  --color-navy-800: #1e293b;
+  --color-navy-700: #334155;
+  --color-navy-600: #475569;
+  --color-navy-500: #64748b;
+  --color-navy-400: #94a3b8;
+  --color-navy-300: #cbd5e1;
+  --color-navy-200: #e2e8f0;
+  --color-navy-100: #f1f5f9;
+
+  --color-teal-600: #1B9E93;
+  --color-teal-500: #2EC4B6;
+  --color-teal-400: #5dd4c8;
+  --color-teal-300: #8ce3da;
+
+  --color-gold-500: #F4A261;
+  --color-gold-400: #fbbf24;
+
+  --color-danger-500: #E63946;
+  --color-danger-400: #ff6b6b;
+
+  --font-serif: "Georgia", "Times New Roman", serif;
+  --font-sans: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+/* Base styles */
+body {
+  font-family: var(--font-serif);
+  color: var(--color-navy-200);
+  background: var(--color-navy-950);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Spinner animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin 0.8s linear infinite;
+}
+
+/* Subtle grid texture overlay */
+.bg-grid-pattern {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(46, 196, 182, 0.03) 1px,
+    transparent 0
+  );
+  background-size: 40px 40px;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-teal-500);
+  outline-offset: 2px;
+}
