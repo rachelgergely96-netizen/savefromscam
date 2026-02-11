@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabaseClient";
 
-export default function AuthCallbackPage() {
+function AuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState("Signing you in...");
@@ -66,5 +66,20 @@ export default function AuthCallbackPage() {
         </>
       )}
     </main>
+  );
+}
+
+export default function AuthCallbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="max-w-md mx-auto px-4 sm:px-6 py-16 text-center">
+          <div className="w-12 h-12 rounded-full border-2 border-teal-500/30 border-t-teal-500 animate-spin mx-auto mb-4" />
+          <p className="text-navy-300 font-sans">Signing you in...</p>
+        </main>
+      }
+    >
+      <AuthCallbackContent />
+    </Suspense>
   );
 }
