@@ -1,10 +1,25 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { createClient } from "@supabase/supabase-js";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
+
+const FREE_CHECKS_PER_DAY = 5;
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
+
+function getSupabaseUserFromToken(accessToken) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey || !accessToken) return null;
+  const userClient = createClient(url, anonKey, {
+    global: { headers: { Authorization: `Bearer ${accessToken}` } },
+    auth: { persistSession: false },
+  });
+  return userClient;
+}
 
 export async function POST(request) {
   try {
@@ -13,6 +28,85 @@ export async function POST(request) {
       return Response.json(
         { error: "Server is missing AI configuration." },
         { status: 500 }
+      );
+    }
+
+    const authHeader = request.headers.get("Authorization");
+    const accessToken = authHeader?.replace(/^Bearer\s+/i, "").trim();
+    if (!accessToken) {
+      return Response.json(
+        { error: "Please sign in to use Scam Check." },
+        { status: 401 }
+      );
+    }
+
+    const userClient = getSupabaseUserFromToken(accessToken);
+    if (!userClient) {
+      return Response.json(
+        { error: "Please sign in to use Scam Check." },
+        { status: 401 }
+      );
+    }
+    const {
+      data: { user },
+      error: userError,
+    } = await userClient.auth.getUser();
+    if (userError || !user) {
+      return Response.json(
+        { error: "Please sign in to use Scam Check." },
+        { status: 401 }
+      );
+    }
+
+    if (!supabaseAdmin) {
+      return Response.json(
+        { error: "Server configuration error." },
+        { status: 500 }
+      );
+    }
+
+    const { data: profile, error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .select("id, is_pro, checks_used_today, checks_reset_at")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError && profileError.code !== "PGRST116") {
+      console.error("Profile fetch error:", profileError);
+      return Response.json(
+        { error: "Could not load your account." },
+        { status: 500 }
+      );
+    }
+
+    const now = new Date();
+    const todayUtc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())).toISOString();
+    let checksUsedToday = profile?.checks_used_today ?? 0;
+    const resetAt = profile?.checks_reset_at ? new Date(profile.checks_reset_at) : null;
+    const resetAtUtc = resetAt ? new Date(Date.UTC(resetAt.getUTCFullYear(), resetAt.getUTCMonth(), resetAt.getUTCDate())).toISOString() : null;
+
+    if (!resetAtUtc || resetAtUtc < todayUtc) {
+      checksUsedToday = 0;
+      await supabaseAdmin
+        .from("profiles")
+        .upsert(
+          {
+            id: user.id,
+            checks_used_today: 0,
+            checks_reset_at: now.toISOString(),
+          },
+          { onConflict: "id" }
+        );
+    }
+
+    const isPro = !!profile?.is_pro;
+    if (!isPro && checksUsedToday >= FREE_CHECKS_PER_DAY) {
+      return Response.json(
+        {
+          error: "You've used your 5 free checks for today. Upgrade to Premium for unlimited.",
+          limitReached: true,
+        },
+        { status: 403 }
       );
     }
 
@@ -65,6 +159,16 @@ ${text}
 
     const responseText = message.content[0].text;
     const result = JSON.parse(responseText);
+
+    const newChecksUsed = checksUsedToday + 1;
+    const newResetAt = !resetAtUtc || resetAtUtc < todayUtc ? now.toISOString() : profile?.checks_reset_at;
+    await supabaseAdmin
+      .from("profiles")
+      .update({
+        checks_used_today: newChecksUsed,
+        checks_reset_at: newResetAt,
+      })
+      .eq("id", user.id);
 
     return Response.json(result);
   } catch (error) {

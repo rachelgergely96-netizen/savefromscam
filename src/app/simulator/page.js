@@ -1,15 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
+import { useAuth } from "@/components/AuthContext";
 import { SCENARIOS } from "@/data/scenarios";
 
 export default function Simulator() {
+  const { user, session, loading } = useAuth();
   const [step, setStep] = useState("intro"); // intro | reading | result
   const [currentScenario, setCurrentScenario] = useState(0);
   const [selectedFlags, setSelectedFlags] = useState([]);
   const [userChoice, setUserChoice] = useState(null);
   const [xp, setXp] = useState(0);
   const [completedIds, setCompletedIds] = useState([]);
+  const [useError, setUseError] = useState(null);
+  const [useLoading, setUseLoading] = useState(false);
+  const [usage, setUsage] = useState(null);
+
+  const fetchUsage = useCallback(async () => {
+    if (!session?.access_token) return;
+    try {
+      const res = await fetch("/api/usage", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setUsage(data);
+      }
+    } catch {
+      // ignore
+    }
+  }, [session?.access_token]);
+
+  useEffect(() => {
+    if (user && session) fetchUsage();
+    else setUsage(null);
+  }, [user, session, fetchUsage]);
 
   const scenario = SCENARIOS[currentScenario];
 
@@ -18,6 +44,43 @@ export default function Simulator() {
     setStep("reading");
     setSelectedFlags([]);
     setUserChoice(null);
+    setUseError(null);
+  }
+
+  async function handleStartScenario(idx) {
+    setUseError(null);
+    if (!user) {
+      setUseError("Sign in to use the Simulator. Free accounts get 1 scenario per day.");
+      return;
+    }
+    setUseLoading(true);
+    try {
+      const res = await fetch("/api/simulator/use", {
+        method: "POST",
+        headers: session?.access_token
+          ? { Authorization: `Bearer ${session.access_token}` }
+          : {},
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 401) {
+        setUseError(data.error || "Please sign in to use the Simulator.");
+        return;
+      }
+      if (res.status === 403 && data.limitReached) {
+        setUseError(data.error || "You've used your 1 free scenario for today.");
+        return;
+      }
+      if (!res.ok || !data.allowed) {
+        setUseError(data.error || "Could not start scenario.");
+        return;
+      }
+      startScenario(idx);
+      fetchUsage();
+    } catch (err) {
+      setUseError(err.message || "Something went wrong.");
+    } finally {
+      setUseLoading(false);
+    }
   }
 
   function toggleFlag(idx) {
@@ -47,15 +110,24 @@ export default function Simulator() {
 
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-      {/* XP Bar */}
-      <div className="flex items-center justify-end gap-3 mb-6">
-        <div className="flex items-center gap-2 bg-teal-500/10 rounded-full px-4 py-1.5 border border-teal-500/20">
-          <span className="text-sm font-bold text-teal-500 font-sans">
-            {xp} XP
-          </span>
-        </div>
+      {/* XP Bar + Usage */}
+      <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
         <div className="text-xs text-navy-500 font-sans">
-          {completedIds.length}/{SCENARIOS.length} completed
+          {user && usage != null
+            ? usage.scenariosLimit == null
+              ? "Unlimited scenarios (Premium)"
+              : `${usage.scenariosUsed} / ${usage.scenariosLimit} scenarios used today`
+            : null}
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-teal-500/10 rounded-full px-4 py-1.5 border border-teal-500/20">
+            <span className="text-sm font-bold text-teal-500 font-sans">
+              {xp} XP
+            </span>
+          </div>
+          <div className="text-xs text-navy-500 font-sans">
+            {completedIds.length}/{SCENARIOS.length} completed
+          </div>
         </div>
       </div>
 
@@ -70,14 +142,39 @@ export default function Simulator() {
             red flags, make your call, and build the instincts that protect you in
             real life.
           </p>
+          {!loading && !user && (
+            <div className="bg-gold-500/10 border border-gold-500/25 rounded-2xl p-4 mb-6">
+              <p className="text-navy-200 text-sm font-sans">
+                Sign in to use the Simulator. Free accounts get 1 scenario per day.
+              </p>
+              <Link
+                href="/auth"
+                className="inline-block mt-2 text-teal-500 font-bold text-sm font-sans hover:underline"
+              >
+                Sign in →
+              </Link>
+            </div>
+          )}
+          {useError && (
+            <div className="bg-danger-500/10 border border-danger-500/25 rounded-2xl p-4 mb-6 flex flex-wrap items-center justify-between gap-2">
+              <p className="text-navy-200 text-sm font-sans">{useError}</p>
+              <Link
+                href="/pricing"
+                className="text-teal-500 font-bold text-sm font-sans hover:underline"
+              >
+                Upgrade →
+              </Link>
+            </div>
+          )}
           <div className="space-y-3">
             {SCENARIOS.map((s, i) => {
               const done = completedIds.includes(s.id);
               return (
                 <button
                   key={s.id}
-                  onClick={() => startScenario(i)}
-                  className="w-full bg-navy-900/70 border border-teal-500/10 rounded-2xl p-5 text-left flex items-center gap-4 hover:border-teal-500/25 transition-colors cursor-pointer"
+                  onClick={() => handleStartScenario(i)}
+                  disabled={!user || useLoading}
+                  className="w-full bg-navy-900/70 border border-teal-500/10 rounded-2xl p-5 text-left flex items-center gap-4 hover:border-teal-500/25 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <div className="w-13 h-13 rounded-xl bg-teal-500/12 flex items-center justify-center text-2xl shrink-0">
                     {s.icon}

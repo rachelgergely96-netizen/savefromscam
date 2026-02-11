@@ -5,6 +5,7 @@ import { createSupabaseBrowserClient } from "@/lib/supabaseClient";
 
 const AuthContext = createContext({
   user: null,
+  session: null,
   loading: true,
   signInWithMagicLink: async () => {},
   signInWithGoogle: async () => {},
@@ -14,6 +15,7 @@ const AuthContext = createContext({
 export function AuthProvider({ children }) {
   const [supabase] = useState(() => createSupabaseBrowserClient());
   const [user, setUser] = useState(null);
+  const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,18 +28,20 @@ export function AuthProvider({ children }) {
 
     async function init() {
       const {
-        data: { session },
+        data: { session: currentSession },
       } = await supabase.auth.getSession();
       if (!ignore) {
-        setUser(session?.user ?? null);
+        setUser(currentSession?.user ?? null);
+        setSession(currentSession ?? null);
         setLoading(false);
       }
 
       const {
         data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
+      } = supabase.auth.onAuthStateChange((_event, newSession) => {
         if (!ignore) {
-          setUser(session?.user ?? null);
+          setUser(newSession?.user ?? null);
+          setSession(newSession ?? null);
         }
       });
 
@@ -83,7 +87,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithMagicLink, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, signInWithMagicLink, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   );

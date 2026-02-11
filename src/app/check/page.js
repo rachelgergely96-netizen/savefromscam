@@ -1,34 +1,75 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
+import { useAuth } from "@/components/AuthContext";
 import { SAMPLE_SCAM_TEXT } from "@/data/scenarios";
 
 export default function ScamCheck() {
+  const { user, session, loading } = useAuth();
   const [checkText, setCheckText] = useState("");
   const [result, setResult] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [error, setError] = useState(null);
+  const [limitReached, setLimitReached] = useState(false);
+  const [usage, setUsage] = useState(null);
+
+  const fetchUsage = useCallback(async () => {
+    if (!session?.access_token) return;
+    try {
+      const res = await fetch("/api/usage", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setUsage(data);
+      }
+    } catch {
+      // ignore
+    }
+  }, [session?.access_token]);
+
+  useEffect(() => {
+    if (user && session) fetchUsage();
+    else setUsage(null);
+  }, [user, session, fetchUsage]);
 
   async function runScamCheck() {
     if (!checkText.trim()) return;
     setAnalyzing(true);
     setResult(null);
     setError(null);
+    setLimitReached(false);
 
     try {
+      const headers = { "Content-Type": "application/json" };
+      if (session?.access_token) {
+        headers["Authorization"] = `Bearer ${session.access_token}`;
+      }
       const res = await fetch("/api/analyze", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({ text: checkText }),
       });
 
+      const data = await res.json().catch(() => ({}));
+
+      if (res.status === 401) {
+        setError(data.error || "Please sign in to use Scam Check.");
+        return;
+      }
+      if (res.status === 403 && data.limitReached) {
+        setLimitReached(true);
+        setError(data.error || "You've used your 5 free checks for today.");
+        return;
+      }
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Analysis failed");
+        setError(data.error || "Analysis failed");
+        return;
       }
 
-      const data = await res.json();
       setResult(data);
+      fetchUsage();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -58,6 +99,28 @@ export default function ScamCheck() {
         break down exactly what&apos;s going on.
       </p>
 
+      {!loading && !user && (
+        <div className="bg-gold-500/10 border border-gold-500/25 rounded-2xl p-4 mb-6">
+          <p className="text-navy-200 text-sm font-sans">
+            Sign in to use Scam Check. Free accounts get 5 checks per day.
+          </p>
+          <Link
+            href="/auth"
+            className="inline-block mt-2 text-teal-500 font-bold text-sm font-sans hover:underline"
+          >
+            Sign in →
+          </Link>
+        </div>
+      )}
+
+      {user && usage != null && (
+        <p className="text-navy-500 text-sm font-sans mb-4">
+          {usage.checksLimit == null
+            ? "Unlimited checks (Premium)"
+            : `${usage.checksUsed} / ${usage.checksLimit} checks used today`}
+        </p>
+      )}
+
       {/* Input area */}
       <div className="bg-navy-900/70 rounded-2xl p-6 border border-teal-500/10 mb-6">
         <textarea
@@ -79,14 +142,14 @@ export default function ScamCheck() {
           <div className="flex-1" />
           <button
             onClick={runScamCheck}
-            disabled={analyzing || !checkText.trim()}
+            disabled={analyzing || !checkText.trim() || !user}
             className={`px-7 py-3 rounded-xl font-bold text-base font-sans cursor-pointer transition-all ${
-              analyzing || !checkText.trim()
+              analyzing || !checkText.trim() || !user
                 ? "bg-navy-700 text-navy-500 cursor-not-allowed"
                 : "bg-gradient-to-r from-teal-500 to-teal-600 text-navy-950 shadow-[0_4px_20px_rgba(46,196,182,0.3)] hover:shadow-[0_4px_28px_rgba(46,196,182,0.45)]"
             }`}
           >
-            {analyzing ? "Analyzing..." : "Check This"}
+            {analyzing ? "Analyzing..." : !user ? "Sign in to check" : "Check This"}
           </button>
         </div>
       </div>
@@ -107,14 +170,25 @@ export default function ScamCheck() {
       {/* Error state */}
       {error && (
         <div className="bg-danger-500/10 border border-danger-500/25 rounded-2xl p-6 text-center">
-          <div className="text-danger-500 font-bold mb-2">Analysis Failed</div>
+          <div className="text-danger-500 font-bold mb-2">
+            {limitReached ? "Daily limit reached" : "Analysis Failed"}
+          </div>
           <div className="text-navy-400 text-sm">{error}</div>
-          <button
-            onClick={runScamCheck}
-            className="mt-4 px-6 py-2 rounded-lg bg-danger-500/15 text-danger-500 text-sm font-bold font-sans cursor-pointer hover:bg-danger-500/25 transition-colors"
-          >
-            Try Again
-          </button>
+          {limitReached ? (
+            <Link
+              href="/pricing"
+              className="inline-block mt-4 px-6 py-2 rounded-lg bg-teal-500 text-navy-950 text-sm font-bold font-sans hover:bg-teal-400 transition-colors"
+            >
+              Upgrade to Premium
+            </Link>
+          ) : (
+            <button
+              onClick={runScamCheck}
+              className="mt-4 px-6 py-2 rounded-lg bg-danger-500/15 text-danger-500 text-sm font-bold font-sans cursor-pointer hover:bg-danger-500/25 transition-colors"
+            >
+              Try Again
+            </button>
+          )}
         </div>
       )}
 
