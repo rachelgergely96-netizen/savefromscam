@@ -45,10 +45,10 @@ export default function PricingPage() {
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
       <section className="text-center mb-12">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-navy-200 mb-3">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-navy-900 mb-3 font-sans">
           Protect Your Whole Family for $9/mo
         </h1>
-        <p className="text-navy-400 max-w-xl mx-auto">
+        <p className="text-navy-700 max-w-xl mx-auto font-sans">
           Start with a simple subscription that unlocks unlimited Scam Checks,
           full simulator access, advanced Scam Scores, and the Family Dashboard.
         </p>
@@ -56,47 +56,47 @@ export default function PricingPage() {
 
       <section className="grid sm:grid-cols-2 gap-4">
         {/* Free */}
-        <div className="bg-navy-900/70 rounded-2xl p-6 border border-navy-700/50">
-          <div className="text-sm font-bold font-sans text-navy-400 mb-1">
+        <div className="card-flat rounded-2xl p-6 border border-sage-200">
+          <div className="text-sm font-bold font-sans text-navy-700 mb-1">
             Free
           </div>
-          <div className="text-3xl font-extrabold text-navy-200 mb-4 font-sans">
+          <div className="text-3xl font-extrabold text-navy-900 mb-4 font-sans">
             $0
           </div>
-          <ul className="space-y-3 text-sm text-navy-400 mb-6">
+          <ul className="space-y-3 text-sm text-navy-700 mb-6 font-sans">
             {[
-              "5 Scam Checks per day",
+              "1 Scam Check per day",
               "1 simulator scenario per day",
               "Basic Scam Score",
               "View community alerts",
               "General safety tips",
             ].map((item, i) => (
               <li key={i} className="flex gap-2">
-                <span className="text-teal-500">&#10003;</span> {item}
+                <span className="text-teal-600">&#10003;</span> {item}
               </li>
             ))}
           </ul>
-          <p className="text-xs text-navy-500">
+          <p className="text-xs text-navy-600 font-sans">
             No credit card required. Perfect for trying SaveFromScam.
           </p>
         </div>
 
         {/* Premium */}
-        <div className="bg-gradient-to-b from-teal-500/10 to-navy-900/70 rounded-2xl p-6 border border-teal-500/25 relative">
+        <div className="bg-gradient-to-b from-teal-500/10 to-sage-50 rounded-2xl p-6 border border-teal-500/25 relative">
           <div className="absolute -top-3 right-6 text-[10px] px-3 py-1 rounded-full bg-teal-500 text-navy-950 font-extrabold font-sans tracking-wide">
             BEST VALUE
           </div>
-          <div className="text-sm font-bold font-sans text-teal-500 mb-1">
+          <div className="text-sm font-bold font-sans text-teal-600 mb-1">
             Premium Family
           </div>
-          <div className="text-3xl font-extrabold text-navy-200 mb-1 font-sans">
+          <div className="text-3xl font-extrabold text-navy-900 mb-1 font-sans">
             $9.00
-            <span className="text-base font-normal text-navy-500">/mo</span>
+            <span className="text-base font-normal text-navy-600">/mo</span>
           </div>
-          <div className="text-xs text-navy-500 mb-4 font-sans">
+          <div className="text-xs text-navy-600 mb-4 font-sans">
             Covers up to 5 family members.
           </div>
-          <ul className="space-y-3 text-sm text-navy-300 mb-6">
+          <ul className="space-y-3 text-sm text-navy-700 mb-6 font-sans">
             {[
               "Unlimited Scam Checks",
               "Full simulator library + new weekly",
@@ -107,7 +107,7 @@ export default function PricingPage() {
               "Priority AI analysis",
             ].map((item, i) => (
               <li key={i} className="flex gap-2">
-                <span className="text-teal-500">&#10003;</span> {item}
+                <span className="text-teal-600">&#10003;</span> {item}
               </li>
             ))}
           </ul>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useAuth } from "@/components/AuthContext";
 import CircularScore from "@/components/CircularScore";
 
 const vulnerabilities = [
@@ -13,11 +14,46 @@ const vulnerabilities = [
 
 export default function ScamScore() {
   const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 100);
     return () => clearTimeout(t);
   }, []);
+
+  async function startPremiumCheckout() {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user?.id || null,
+          email: user?.email || null,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to start checkout.");
+      }
+
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL returned.");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -98,9 +134,24 @@ export default function ScamScore() {
           Connect with family members to share scam alerts, monitor training
           progress, and keep each other safe.
         </p>
-        <button className="w-full py-3.5 rounded-xl bg-gradient-to-r from-gold-500 to-amber-500 text-navy-950 font-bold font-sans cursor-pointer shadow-[0_4px_20px_rgba(244,162,97,0.3)] hover:shadow-[0_4px_28px_rgba(244,162,97,0.45)] transition-shadow">
-          Upgrade to Premium &mdash; $7.99/mo
+        <button
+          onClick={user ? startPremiumCheckout : () => (window.location.href = "/auth")}
+          disabled={loading}
+          className={`w-full py-3.5 rounded-xl font-bold font-sans cursor-pointer transition-all ${
+            loading
+              ? "bg-navy-700 text-navy-500 cursor-not-allowed"
+              : "bg-gradient-to-r from-gold-500 to-amber-500 text-navy-950 shadow-[0_4px_20px_rgba(244,162,97,0.3)] hover:shadow-[0_4px_28px_rgba(244,162,97,0.45)]"
+          }`}
+        >
+          {loading
+            ? "Redirecting to checkout..."
+            : user
+              ? "Upgrade to Premium — $9.00/mo"
+              : "Sign in to upgrade"}
         </button>
+        {error && (
+          <p className="mt-3 text-xs text-danger-500 text-center font-sans">{error}</p>
+        )}
       </div>
     </main>
   );
