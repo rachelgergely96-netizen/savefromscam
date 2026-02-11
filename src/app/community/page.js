@@ -5,8 +5,8 @@ import { COMMUNITY_POSTS } from "@/data/scenarios";
 const typeColors = {
   Phone: "bg-gold-500/15 text-gold-500",
   Text: "bg-teal-500/15 text-teal-500",
-  Email: "bg-purple-500/15 text-purple-400",
-  Online: "bg-blue-500/15 text-blue-400",
+  Email: "bg-purple-500/15 text-purple-600",
+  Online: "bg-blue-500/15 text-blue-600",
 };
 
 export default function Community() {
@@ -14,10 +14,10 @@ export default function Community() {
     <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
       <div className="flex items-start justify-between mb-6 gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-navy-200 mb-1">
+          <h1 className="text-3xl font-extrabold text-navy-900 mb-1 font-sans">
             Community Alerts
           </h1>
-          <p className="text-sm text-navy-500 font-sans">
+          <p className="text-sm text-navy-600 font-sans">
             Central Florida &middot; Live feed
           </p>
         </div>
@@ -38,10 +38,10 @@ export default function Community() {
             Central Florida
           </span>
         </div>
-        <div className="text-base font-bold text-navy-100 mb-1">
+        <div className="text-base font-bold text-navy-900 mb-1 font-sans">
           FPL Scam Calls Surging This Week
         </div>
-        <div className="text-sm text-navy-400 leading-relaxed">
+        <div className="text-sm text-navy-700 leading-relaxed font-sans">
           47 reports in the last 48 hours of callers posing as Florida Power &
           Light, threatening immediate shutoff and demanding gift card payment.
         </div>
@@ -52,7 +52,7 @@ export default function Community() {
         {COMMUNITY_POSTS.map((post, i) => (
           <div
             key={i}
-            className="bg-navy-900/70 rounded-2xl p-5 border border-teal-500/8"
+            className="card-flat rounded-2xl p-5 border border-sage-200 hover:border-teal-500/30 transition-colors"
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
@@ -68,10 +68,10 @@ export default function Community() {
                     .join("")}
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-navy-200">
+                  <div className="text-sm font-bold text-navy-900 font-sans">
                     {post.user}
                   </div>
-                  <div className="text-[11px] text-navy-500 font-sans">
+                  <div className="text-[11px] text-navy-600 font-sans">
                     {post.location} &middot; {post.time}
                   </div>
                 </div>
@@ -83,23 +83,23 @@ export default function Community() {
                   {post.type}
                 </span>
                 {post.verified && (
-                  <span className="text-xs text-teal-500" title="Verified">
+                  <span className="text-xs text-teal-600" title="Verified">
                     &#10003;
                   </span>
                 )}
               </div>
             </div>
-            <p className="text-sm text-navy-400 leading-relaxed mb-3">
+            <p className="text-sm text-navy-700 leading-relaxed mb-3 font-sans">
               {post.scam}
             </p>
-            <div className="flex items-center gap-5 text-xs text-navy-500 font-sans">
-              <button className="hover:text-navy-300 transition-colors cursor-pointer">
+            <div className="flex items-center gap-5 text-xs text-navy-600 font-sans">
+              <button className="hover:text-teal-600 transition-colors cursor-pointer">
                 &#9650; {post.votes}
               </button>
-              <button className="hover:text-navy-300 transition-colors cursor-pointer">
+              <button className="hover:text-teal-600 transition-colors cursor-pointer">
                 Reply
               </button>
-              <button className="hover:text-navy-300 transition-colors cursor-pointer">
+              <button className="hover:text-teal-600 transition-colors cursor-pointer">
                 Share
               </button>
             </div>
@@ -109,7 +109,7 @@ export default function Community() {
 
       {/* Report CTA */}
       <div className="text-center mt-6 p-6 bg-teal-500/6 rounded-2xl border border-dashed border-teal-500/20">
-        <div className="text-sm text-navy-500 mb-3">
+        <div className="text-sm text-navy-700 mb-3 font-sans">
           Seen a scam? Help your community.
         </div>
         <button className="px-6 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 text-navy-950 text-sm font-bold font-sans cursor-pointer shadow-[0_4px_20px_rgba(46,196,182,0.3)] hover:shadow-[0_4px_28px_rgba(46,196,182,0.45)] transition-shadow">
