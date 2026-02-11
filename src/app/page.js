@@ -2,21 +2,75 @@ import Link from "next/link";
 import { ShieldCheck, CheckCircle, Info } from "lucide-react";
 import HomepageCheckDemo from "@/components/HomepageCheckDemo";
 import HomepageIconSections from "@/components/HomepageIconSections";
+import TrustBadge from "@/components/TrustBadge";
+import FeatureValueBoxes from "@/components/FeatureValueBoxes";
 
 export default function Home() {
   return (
     <main>
-      {/* Hero + inline demo */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-4">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-4 text-teal-500 font-sans">
-            Know if it's a scam—before you respond.
-          </h1>
-          <p className="text-xl text-navy-600 leading-relaxed max-w-2xl mx-auto font-sans">
-            We explain the manipulation tactics and give safe next steps.
-          </p>
+      {/* Hero with gradient background */}
+      <section className="relative overflow-hidden">
+        {/* Background gradient layer */}
+        <div className="absolute inset-0 bg-gradient-to-br from-teal-50 via-sage-50 to-cream-bg opacity-90"
+             aria-hidden="true" />
+
+        {/* Optional: Subtle pattern overlay */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-20" aria-hidden="true" />
+
+        {/* Content layer */}
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 pt-20 sm:pt-32 pb-16 sm:pb-20">
+          <div className="text-center max-w-3xl mx-auto">
+            {/* Value proposition badge */}
+            <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border-2 border-teal-500/30 rounded-full px-5 py-2.5 mb-6 shadow-sm">
+              <ShieldCheck className="w-5 h-5 text-teal-600" />
+              <span className="text-base font-bold text-navy-900 font-sans">
+                Free Scam Detection Tool
+              </span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-navy-900 font-sans">
+              Know if it's a scam—<span className="text-teal-600">before you respond.</span>
+            </h1>
+
+            <p className="text-xl sm:text-2xl text-navy-700 leading-relaxed mb-8 font-sans">
+              We explain the manipulation tactics and give safe next steps. Built for older adults and families.
+            </p>
+
+            {/* Trust signals in hero */}
+            <div className="flex flex-wrap justify-center gap-3 mb-8">
+              <TrustBadge variant="secure" size="md" />
+              <TrustBadge variant="private" size="md" />
+              <TrustBadge variant="redacted" size="md" />
+            </div>
+
+            {/* CTA buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <a
+                href="#check-demo"
+                className="btn-primary px-8 py-4 text-lg font-sans font-bold shadow-lg hover:shadow-xl"
+              >
+                Check a message now (free)
+              </a>
+              <Link
+                href="/simulator"
+                className="btn-secondary px-8 py-4 text-lg font-sans"
+              >
+                Try the simulator
+              </Link>
+            </div>
+          </div>
         </div>
+
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-b from-transparent to-warm-bg"
+             aria-hidden="true" />
       </section>
+
+      {/* Feature value boxes */}
+      <FeatureValueBoxes />
+
+      {/* Scroll anchor for hero CTA */}
+      <div id="check-demo" />
 
       <HomepageCheckDemo />
 
