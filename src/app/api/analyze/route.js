@@ -201,7 +201,7 @@ ${text}
 
     const message = await client.messages.create({
       // Use a stable, current model identifier
-      model: "claude-3-5-sonnet-20240620",
+      model: "claude-3-sonnet-20240229",
       max_tokens: 1024,
       messages: [
         {
