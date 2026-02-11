@@ -1,9 +1,21 @@
 import Anthropic from "@anthropic-ai/sdk";
 
-const client = new Anthropic();
+export const runtime = "nodejs";
+
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
 
 export async function POST(request) {
   try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      console.error("ANTHROPIC_API_KEY is not set on the server.");
+      return Response.json(
+        { error: "Server is missing AI configuration." },
+        { status: 500 }
+      );
+    }
+
     const { text } = await request.json();
 
     if (!text || typeof text !== "string" || text.trim().length === 0) {
@@ -18,7 +30,8 @@ export async function POST(request) {
     }
 
     const message = await client.messages.create({
-      model: "claude-sonnet-4-5-20250929",
+      // Use a stable, current model identifier
+      model: "claude-3-5-sonnet-latest",
       max_tokens: 1024,
       messages: [
         {

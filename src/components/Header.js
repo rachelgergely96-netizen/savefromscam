@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/components/AuthContext";
 
 const navLinks = [
   { href: "/check", label: "Scam Check", icon: "\u{1F50D}" },
@@ -13,6 +14,7 @@ const navLinks = [
 export default function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const { user, loading, signOut } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 border-b border-teal-500/15 backdrop-blur-xl bg-navy-950/80">
@@ -57,12 +59,22 @@ export default function Header() {
           )}
 
           {isHome && (
-            <Link
-              href="/check"
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 text-navy-950 text-sm font-bold font-sans hover:shadow-[0_4px_20px_rgba(46,196,182,0.35)] transition-shadow"
-            >
-              Try Free
-            </Link>
+            <div className="flex items-center gap-3">
+              {!loading && user && (
+                <button
+                  onClick={signOut}
+                  className="text-xs text-navy-500 hover:text-navy-300 font-sans cursor-pointer"
+                >
+                  Sign out
+                </button>
+              )}
+              <Link
+                href="/pricing"
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 text-navy-950 text-sm font-bold font-sans hover:shadow-[0_4px_20px_rgba(46,196,182,0.35)] transition-shadow"
+              >
+                {user ? "Manage plan" : "Try Free"}
+              </Link>
+            </div>
           )}
         </div>
 

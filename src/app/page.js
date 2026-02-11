@@ -262,11 +262,11 @@ export default function Home() {
               Premium
             </div>
             <div className="text-3xl font-extrabold text-navy-200 mb-1 font-sans">
-              $7.99
+              $9.00
               <span className="text-base font-normal text-navy-500">/mo</span>
             </div>
             <div className="text-xs text-navy-500 mb-4 font-sans">
-              or $59.99/year &middot; covers up to 5 family members
+              Covers up to 5 family members.
             </div>
             <ul className="space-y-3 text-sm text-navy-300 mb-6">
               {[
@@ -284,9 +284,12 @@ export default function Home() {
                 </li>
               ))}
             </ul>
-            <button className="w-full py-3 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 text-navy-950 font-bold font-sans shadow-[0_4px_20px_rgba(46,196,182,0.3)] hover:shadow-[0_4px_28px_rgba(46,196,182,0.45)] transition-shadow cursor-pointer">
+            <Link
+              href="/pricing"
+              className="w-full block text-center py-3 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 text-navy-950 font-bold font-sans shadow-[0_4px_20px_rgba(46,196,182,0.3)] hover:shadow-[0_4px_28px_rgba(46,196,182,0.45)] transition-shadow cursor-pointer"
+            >
               Start Premium
-            </button>
+            </Link>
           </div>
         </div>
       </section>

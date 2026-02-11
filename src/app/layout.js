@@ -1,5 +1,6 @@
 import "./globals.css";
 import Header from "@/components/Header";
+import { AuthProvider } from "@/components/AuthContext";
 
 export const metadata = {
   title: "SaveFromScam — AI-Powered Scam Detection & Training",
@@ -32,8 +33,10 @@ export default function RootLayout({ children }) {
         />
 
         <div className="relative z-10">
-          <Header />
-          {children}
+          <AuthProvider>
+            <Header />
+            {children}
+          </AuthProvider>
         </div>
       </body>
     </html>
