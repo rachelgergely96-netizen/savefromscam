@@ -20,10 +20,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-navy-950 antialiased">
+      <body className="min-h-screen bg-warm-bg antialiased">
         {/* Solid background with very subtle texture */}
-        <div className="fixed inset-0 bg-navy-950 pointer-events-none" />
-        <div className="fixed inset-0 bg-grid-pattern pointer-events-none opacity-60" />
+        <div className="fixed inset-0 bg-warm-bg pointer-events-none" />
+        <div className="fixed inset-0 bg-grid-pattern pointer-events-none opacity-30" />
 
         <div className="relative z-10 pb-20 sm:pb-0">
           <AuthProvider>
