@@ -5,12 +5,12 @@ export default function TrustBadge({ variant = "secure", size = "sm" }) {
   const badges = {
     secure: {
       icon: ShieldCheck,
-      text: "Secure Analysis",
+      text: "Secure",
       description: "Your data is encrypted"
     },
     private: {
       icon: Lock,
-      text: "Private by Default",
+      text: "Private",
       description: "We redact sensitive info automatically"
     },
     verified: {
@@ -20,7 +20,7 @@ export default function TrustBadge({ variant = "secure", size = "sm" }) {
     },
     redacted: {
       icon: Eye,
-      text: "Auto-Redacted",
+      text: "Redacted",
       description: "Phone, email, SSN removed"
     }
   };
@@ -46,11 +46,11 @@ export default function TrustBadge({ variant = "secure", size = "sm" }) {
 
   return (
     <div
-      className={`inline-flex items-center border rounded-full ${sizeClasses} ${colorClasses}`}
+      className={`inline-flex items-center border rounded-full whitespace-nowrap ${sizeClasses} ${colorClasses}`}
       style={{ boxShadow: 'var(--shadow-trust)' }}
       title={badge.description}
     >
-      <Icon className={`w-4 h-4 ${iconColorClass}`} />
+      <Icon className={`w-4 h-4 flex-shrink-0 ${iconColorClass}`} />
       <span className="font-medium">
         {badge.text}
       </span>
