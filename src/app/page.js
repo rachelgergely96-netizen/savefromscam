@@ -28,9 +28,16 @@ export default function Home() {
               </span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-navy-900 font-sans">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-4 text-navy-900 font-sans">
               Know if it's a scam—<span className="text-teal-600">before you respond.</span>
             </h1>
+
+            <Link
+              href="/simulator"
+              className="inline-flex items-center gap-2 text-base font-semibold text-teal-600 hover:text-teal-700 mb-6 font-sans transition-colors"
+            >
+              Or practice with the Scam Simulator →
+            </Link>
 
             <p className="text-xl sm:text-2xl text-navy-700 leading-relaxed mb-8 font-sans">
               We explain the manipulation tactics and give safe next steps. Built for older adults and families.
@@ -43,20 +50,14 @@ export default function Home() {
               <TrustBadge variant="redacted" size="md" />
             </div>
 
-            {/* CTA buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            {/* CTA button */}
+            <div className="flex justify-center">
               <a
                 href="#check-demo"
                 className="btn-primary px-8 py-4 text-lg font-sans font-bold shadow-lg hover:shadow-xl"
               >
                 Check a message now (free)
               </a>
-              <Link
-                href="/simulator"
-                className="btn-secondary px-8 py-4 text-lg font-sans"
-              >
-                Try the simulator
-              </Link>
             </div>
           </div>
         </div>
