@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "@/components/AuthContext";
 import CommentsSection from "@/components/CommentsSection";
+import { STATE_CODE_MAP } from "@/data/us-states";
 
 const typeColors = {
   Phone: "bg-gold-500/15 text-gold-500",
@@ -94,7 +95,12 @@ export default function PostCard({ post, onVoteUpdate, index = 0 }) {
               {post.user.name}
             </div>
             <div className="text-[11px] text-navy-600 dark:text-dark-text-tertiary font-sans">
-              {post.location || "Location not specified"} &middot;{" "}
+              {post.location && post.state
+                ? `${post.location}, ${post.state}`
+                : post.state
+                  ? STATE_CODE_MAP[post.state] || post.state
+                  : post.location || "Location not specified"}{" "}
+              &middot;{" "}
               {formatTimeAgo(post.created_at)}
             </div>
           </div>

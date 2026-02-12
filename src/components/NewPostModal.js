@@ -1,13 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/components/AuthContext";
+import { US_STATES } from "@/data/us-states";
 
-export default function NewPostModal({ open, onClose, onSubmit }) {
+export default function NewPostModal({ open, onClose, onSubmit, defaultState }) {
   const { session } = useAuth();
   const [scamType, setScamType] = useState("Phone");
   const [content, setContent] = useState("");
-  const [location, setLocation] = useState("");
+  const [state, setState] = useState(defaultState || "FL");
+  const [city, setCity] = useState("");
+
+  useEffect(() => {
+    if (open && defaultState) {
+      setState(defaultState);
+    }
+  }, [open, defaultState]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -27,7 +35,8 @@ export default function NewPostModal({ open, onClose, onSubmit }) {
         body: JSON.stringify({
           scam_type: scamType,
           content: content.trim(),
-          location: location.trim() || null,
+          state: state,
+          location: city.trim() || null,
         }),
       });
 
@@ -40,7 +49,8 @@ export default function NewPostModal({ open, onClose, onSubmit }) {
       // Success - show confirmation
       setSuccess(true);
       setContent("");
-      setLocation("");
+      setCity("");
+      setState(defaultState || "FL");
       setScamType("Phone");
 
       // Call onSubmit callback
@@ -127,15 +137,33 @@ export default function NewPostModal({ open, onClose, onSubmit }) {
                 </div>
               </div>
 
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-navy-900 dark:text-dark-text-primary mb-2">
+                  State <span className="text-danger-500">*</span>
+                </label>
+                <select
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg border border-sage-200 dark:border-dark-border bg-white dark:bg-dark-bg-primary text-navy-900 dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-dark-teal-primary"
+                  required
+                >
+                  {US_STATES.map((s) => (
+                    <option key={s.code} value={s.code}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="mb-6">
                 <label className="block text-sm font-bold text-navy-900 dark:text-dark-text-primary mb-2">
-                  Location <span className="font-normal text-navy-600 dark:text-dark-text-secondary">(Optional)</span>
+                  City <span className="font-normal text-navy-600 dark:text-dark-text-secondary">(Optional)</span>
                 </label>
                 <input
                   type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="e.g., Orlando, FL"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  placeholder="e.g., Orlando"
                   maxLength={100}
                   className="w-full px-4 py-2 rounded-lg border border-sage-200 dark:border-dark-border bg-white dark:bg-dark-bg-primary text-navy-900 dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-dark-teal-primary"
                 />

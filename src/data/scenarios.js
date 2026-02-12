@@ -103,7 +103,8 @@ export const SCENARIOS = [
 export const COMMUNITY_POSTS = [
   {
     user: "Margaret T.",
-    location: "Orlando, FL",
+    location: "Orlando",
+    state: "FL",
     time: "2 hours ago",
     type: "Phone",
     scam: "Got a call claiming to be from FPL saying my power would be shut off in 1 hour unless I paid with gift cards. FPL confirmed it was fake.",
@@ -112,7 +113,8 @@ export const COMMUNITY_POSTS = [
   },
   {
     user: "Robert K.",
-    location: "Maitland, FL",
+    location: "Maitland",
+    state: "FL",
     time: "5 hours ago",
     type: "Text",
     scam: "Received a text about an undelivered USPS package with a link to 'usps-redelivery.tracking-info.com'. Definitely phishing.",
@@ -121,7 +123,8 @@ export const COMMUNITY_POSTS = [
   },
   {
     user: "Carol A.",
-    location: "Winter Park, FL",
+    location: "Winter Park",
+    state: "FL",
     time: "1 day ago",
     type: "Email",
     scam: "Email claiming my Publix pharmacy prescription was ready with a link to 'verify insurance.' Publix doesn't send emails like this.",
@@ -130,7 +133,8 @@ export const COMMUNITY_POSTS = [
   },
   {
     user: "James W.",
-    location: "Altamonte Springs, FL",
+    location: "Altamonte Springs",
+    state: "FL",
     time: "1 day ago",
     type: "Online",
     scam: "Facebook Marketplace seller wanted payment via Zelle before showing the furniture. Used stock photos. Classic marketplace scam.",
@@ -139,7 +143,8 @@ export const COMMUNITY_POSTS = [
   },
   {
     user: "Patricia M.",
-    location: "Kissimmee, FL",
+    location: "Kissimmee",
+    state: "FL",
     time: "2 days ago",
     type: "Phone",
     scam: "Grandson voice clone asking for bail money. Used our actual grandson's name. We called him directly \u2014 he was fine. Terrifying how real it sounded.",

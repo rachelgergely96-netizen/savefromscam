@@ -7,7 +7,8 @@ const AuthContext = createContext({
   user: null,
   session: null,
   loading: true,
-  signInWithMagicLink: async () => {},
+  signUp: async () => {},
+  signIn: async () => {},
   signInWithGoogle: async () => {},
   signOut: async () => {},
 });
@@ -54,18 +55,16 @@ export function AuthProvider({ children }) {
     init();
   }, [supabase]);
 
-  async function signInWithMagicLink(email) {
+  async function signUp(email, password) {
     if (!supabase) return { error: new Error("Supabase not configured") };
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo:
-          typeof window !== "undefined"
-            ? `${window.location.origin}/auth/callback`
-            : undefined,
-      },
-    });
-    return { error };
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    return { data, error };
+  }
+
+  async function signIn(email, password) {
+    if (!supabase) return { error: new Error("Supabase not configured") };
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    return { data, error };
   }
 
   async function signInWithGoogle() {
@@ -87,7 +86,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signInWithMagicLink, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { VALID_STATE_CODES } from "@/data/us-states";
 
 export const runtime = "nodejs";
 
@@ -22,7 +23,7 @@ function getSupabaseUserFromToken(accessToken) {
 /**
  * GET /api/community/posts
  * Fetch approved posts with pagination
- * Query params: limit, offset, scam_type
+ * Query params: limit, offset, scam_type, state
  */
 export async function GET(request) {
   try {
@@ -30,6 +31,7 @@ export async function GET(request) {
     const limit = Math.min(parseInt(searchParams.get("limit") || "20"), 50);
     const offset = parseInt(searchParams.get("offset") || "0");
     const scamType = searchParams.get("scam_type");
+    const state = searchParams.get("state");
 
     // Get user if authenticated (to check if they voted)
     const authHeader = request.headers.get("Authorization");
@@ -56,6 +58,7 @@ export async function GET(request) {
         scam_type,
         content,
         location,
+        state,
         vote_count,
         comment_count,
         verified,
@@ -70,6 +73,11 @@ export async function GET(request) {
     // Filter by scam type if specified
     if (scamType && ["Phone", "Text", "Email", "Online"].includes(scamType)) {
       query = query.eq("scam_type", scamType);
+    }
+
+    // Filter by state if specified
+    if (state && VALID_STATE_CODES.has(state)) {
+      query = query.eq("state", state);
     }
 
     const { data: posts, error, count } = await query;
@@ -130,6 +138,7 @@ export async function GET(request) {
         scam_type: post.scam_type,
         content: post.content,
         location: post.location,
+        state: post.state,
         vote_count: post.vote_count,
         comment_count: post.comment_count,
         verified: post.verified,
@@ -188,13 +197,21 @@ export async function POST(request) {
 
     // Parse request body
     const body = await request.json();
-    const { scam_type, content, location } = body;
+    const { scam_type, content, location, state } = body;
 
     // Validate scam_type
     const validScamTypes = ["Phone", "Text", "Email", "Online"];
     if (!scam_type || !validScamTypes.includes(scam_type)) {
       return Response.json(
         { error: "Invalid scam type. Must be Phone, Text, Email, or Online" },
+        { status: 400 }
+      );
+    }
+
+    // Validate state (required)
+    if (!state || !VALID_STATE_CODES.has(state)) {
+      return Response.json(
+        { error: "Please select a valid US state" },
         { status: 400 }
       );
     }
@@ -281,6 +298,7 @@ export async function POST(request) {
         user_id: user.id,
         scam_type: scam_type,
         content: trimmedContent,
+        state: state,
         location: location?.trim() || null,
         status: "pending", // Goes to moderation queue
       })

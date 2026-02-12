@@ -1,25 +1,41 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthContext";
 
 export default function AuthPage() {
-  const { user, loading, signInWithMagicLink, signInWithGoogle } = useAuth();
+  const router = useRouter();
+  const { user, loading, signUp, signIn, signInWithGoogle } = useAuth();
+  const [mode, setMode] = useState("signup"); // "signup" or "signin"
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [status, setStatus] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+
+  const isSignUp = mode === "signup";
 
   async function handleSubmit(e) {
     e.preventDefault();
     setSubmitting(true);
     setStatus("");
 
-    const { error } = await signInWithMagicLink(email);
-    if (error) {
-      setStatus(error.message || "Failed to send magic link.");
+    if (isSignUp) {
+      const { error } = await signUp(email, password);
+      if (error) {
+        setStatus(error.message || "Sign-up failed.");
+      } else {
+        setStatus("Account created! Signing you in...");
+        router.replace("/");
+      }
     } else {
-      setStatus("Check your email for a sign-in link.");
+      const { error } = await signIn(email, password);
+      if (error) {
+        setStatus(error.message || "Sign-in failed.");
+      } else {
+        router.replace("/");
+      }
     }
     setSubmitting(false);
   }
@@ -32,17 +48,17 @@ export default function AuthPage() {
       setStatus(error.message || "Google sign-in failed.");
       setGoogleLoading(false);
     }
-    // If no error, the browser is redirecting to Google; leave loading on
   }
 
   return (
     <main className="max-w-md mx-auto px-4 sm:px-6 py-16">
       <h1 className="text-3xl font-extrabold text-navy-200 mb-3">
-        Sign in to SaveFromScam
+        {isSignUp ? "Create your account" : "Sign in to SaveFromScam"}
       </h1>
       <p className="text-navy-400 mb-8 text-sm">
-        No passwords. Enter your email and we&apos;ll send you a secure
-        one-time link.
+        {isSignUp
+          ? "Create a free account to save results and track your Scam Score."
+          : "Enter your email and password to sign in."}
       </p>
 
       {user && !loading && (
@@ -85,7 +101,7 @@ export default function AuthPage() {
           </div>
           <div className="relative flex justify-center text-xs">
             <span className="bg-navy-950 px-3 text-navy-500 font-sans">
-              or sign in with email
+              or {isSignUp ? "sign up" : "sign in"} with email
             </span>
           </div>
         </div>
@@ -105,6 +121,18 @@ export default function AuthPage() {
             className="w-full rounded-xl bg-navy-950/60 border border-navy-600/40 px-4 py-3 text-sm text-navy-200 outline-none focus:border-teal-500/60 transition-colors mb-4"
             placeholder="you@example.com"
           />
+          <label className="block text-xs font-semibold text-navy-400 mb-2">
+            Password
+          </label>
+          <input
+            type="password"
+            required
+            minLength={6}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full rounded-xl bg-navy-950/60 border border-navy-600/40 px-4 py-3 text-sm text-navy-200 outline-none focus:border-teal-500/60 transition-colors mb-4"
+            placeholder={isSignUp ? "Create a password (min 6 characters)" : "Your password"}
+          />
           <button
             type="submit"
             disabled={submitting}
@@ -114,14 +142,26 @@ export default function AuthPage() {
                 : "bg-gradient-to-r from-teal-500 to-teal-600 text-navy-950 shadow-[0_4px_20px_rgba(46,196,182,0.3)] hover:shadow-[0_4px_28px_rgba(46,196,182,0.45)]"
             }`}
           >
-            {submitting ? "Sending link..." : "Send magic link"}
+            {submitting
+              ? (isSignUp ? "Creating account..." : "Signing in...")
+              : (isSignUp ? "Create account" : "Sign in")}
           </button>
           {status && (
             <p className="mt-3 text-xs text-navy-400 text-center">{status}</p>
           )}
         </form>
+
+        <p className="text-center text-sm text-navy-400 font-sans">
+          {isSignUp ? "Already have an account?" : "Don\u2019t have an account?"}{" "}
+          <button
+            type="button"
+            onClick={() => { setMode(isSignUp ? "signin" : "signup"); setStatus(""); }}
+            className="text-teal-500 hover:underline font-semibold cursor-pointer"
+          >
+            {isSignUp ? "Sign in" : "Create one"}
+          </button>
+        </p>
       </div>
     </main>
   );
 }
-

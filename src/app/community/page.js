@@ -1,55 +1,112 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthContext";
-import { COMMUNITY_POSTS } from "@/data/scenarios";
+import { US_STATES, STATE_CODE_MAP } from "@/data/us-states";
 import PostCard from "@/components/PostCard";
 import NewPostModal from "@/components/NewPostModal";
 
-export default function Community() {
+function getInitialState(searchParams) {
+  // URL param takes priority (for shareable links)
+  const urlState = searchParams?.get("state");
+  if (urlState && STATE_CODE_MAP[urlState]) return urlState;
+
+  // Then localStorage
+  if (typeof window !== "undefined") {
+    try {
+      const saved = localStorage.getItem("savefromscam_state");
+      if (saved && STATE_CODE_MAP[saved]) return saved;
+    } catch {}
+  }
+
+  return "FL";
+}
+
+function CommunityContent() {
   const { session } = useAuth();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const [selectedState, setSelectedState] = useState(() =>
+    getInitialState(searchParams)
+  );
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showNewPostModal, setShowNewPostModal] = useState(false);
   const [error, setError] = useState(null);
+  const [showNewPostModal, setShowNewPostModal] = useState(false);
+  const [trending, setTrending] = useState(null);
+  const [trendingLoading, setTrendingLoading] = useState(true);
 
-  useEffect(() => {
-    fetchPosts();
-  }, [session]);
-
-  async function fetchPosts() {
+  const fetchPosts = useCallback(async () => {
+    setLoading(true);
+    setError(null);
     try {
       const headers = session?.access_token
         ? { Authorization: `Bearer ${session.access_token}` }
         : {};
 
-      const res = await fetch("/api/community/posts?limit=20", { headers });
+      const res = await fetch(
+        `/api/community/posts?limit=20&state=${selectedState}`,
+        { headers }
+      );
       const data = await res.json();
 
       if (res.ok) {
         setPosts(data.posts || []);
       } else {
         setError(data.error || "Failed to load posts");
-        // Fallback to hardcoded posts if API fails
         setPosts([]);
       }
     } catch (err) {
       console.error("Failed to load posts:", err);
       setError("Failed to load posts");
-      // Fallback to empty array
       setPosts([]);
     } finally {
       setLoading(false);
     }
+  }, [session, selectedState]);
+
+  const fetchTrending = useCallback(async () => {
+    setTrendingLoading(true);
+    try {
+      const res = await fetch(
+        `/api/community/trending?state=${selectedState}`
+      );
+      const data = await res.json();
+      setTrending(data.trending || null);
+    } catch (err) {
+      console.error("Failed to load trending:", err);
+      setTrending(null);
+    } finally {
+      setTrendingLoading(false);
+    }
+  }, [selectedState]);
+
+  useEffect(() => {
+    fetchPosts();
+    fetchTrending();
+  }, [fetchPosts, fetchTrending]);
+
+  function handleStateChange(e) {
+    const newState = e.target.value;
+    setSelectedState(newState);
+
+    // Save to localStorage
+    try {
+      localStorage.setItem("savefromscam_state", newState);
+    } catch {}
+
+    // Update URL without full navigation
+    router.replace(`/community?state=${newState}`, { scroll: false });
   }
 
   function handleNewPost() {
-    // Refresh posts after new post is submitted
     fetchPosts();
+    fetchTrending();
   }
 
   function handleVoteUpdate(postId, voted, voteCount) {
-    // Update the post in the local state
     setPosts((prevPosts) =>
       prevPosts.map((post) =>
         post.id === postId
@@ -61,12 +118,18 @@ export default function Community() {
 
   function handleReportClick() {
     if (!session) {
-      // Redirect to sign in
       window.location.href = "/auth";
       return;
     }
     setShowNewPostModal(true);
   }
+
+  const scamTypeLabels = {
+    Phone: "Phone Call Scams",
+    Text: "Text Message Scams",
+    Email: "Email Scams",
+    Online: "Online/Social Media Scams",
+  };
 
   return (
     <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -75,9 +138,25 @@ export default function Community() {
           <h1 className="text-3xl font-extrabold text-navy-900 dark:text-dark-text-primary mb-1 font-sans">
             Community Alerts
           </h1>
-          <p className="text-sm text-navy-600 dark:text-dark-text-secondary font-sans">
-            Central Florida &middot; Live feed
-          </p>
+          <div className="flex items-center gap-1.5 text-sm text-navy-600 dark:text-dark-text-secondary font-sans">
+            <select
+              value={selectedState}
+              onChange={handleStateChange}
+              className="bg-transparent text-sm font-semibold text-navy-900 dark:text-dark-text-primary border-none outline-none cursor-pointer p-0 pr-5 appearance-none"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M3 5l3 3 3-3'/%3E%3C/svg%3E")`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "right center",
+              }}
+            >
+              {US_STATES.map((s) => (
+                <option key={s.code} value={s.code}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+            <span>&middot; Live feed</span>
+          </div>
         </div>
         <div className="px-4 py-2 rounded-full bg-danger-500/12 dark:bg-dark-danger-bg border border-danger-500/25 dark:border-dark-danger/30 shrink-0">
           <span className="text-xs font-bold text-danger-500 dark:text-dark-danger font-sans">
@@ -87,23 +166,35 @@ export default function Community() {
       </div>
 
       {/* Trending alert */}
-      <div className="bg-gradient-to-r from-danger-500/12 to-danger-500/5 dark:from-dark-danger-bg dark:to-dark-danger-bg/50 border border-danger-500/25 dark:border-dark-danger/30 rounded-2xl p-5 mb-6">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-[10px] bg-danger-500 dark:bg-dark-danger text-white px-2.5 py-0.5 rounded-full font-bold font-sans">
-            TRENDING
-          </span>
-          <span className="text-xs text-danger-500 dark:text-dark-danger font-sans">
-            Central Florida
-          </span>
+      {trendingLoading ? (
+        <div className="bg-gradient-to-r from-danger-500/12 to-danger-500/5 dark:from-dark-danger-bg dark:to-dark-danger-bg/50 border border-danger-500/25 dark:border-dark-danger/30 rounded-2xl p-5 mb-6 animate-pulse">
+          <div className="h-4 bg-danger-500/10 dark:bg-dark-danger/10 rounded w-32 mb-2" />
+          <div className="h-5 bg-danger-500/10 dark:bg-dark-danger/10 rounded w-3/4 mb-1" />
+          <div className="h-4 bg-danger-500/10 dark:bg-dark-danger/10 rounded w-full" />
         </div>
-        <div className="text-base font-bold text-navy-900 dark:text-dark-text-primary mb-1 font-sans">
-          FPL Scam Calls Surging This Week
+      ) : trending ? (
+        <div className="bg-gradient-to-r from-danger-500/12 to-danger-500/5 dark:from-dark-danger-bg dark:to-dark-danger-bg/50 border border-danger-500/25 dark:border-dark-danger/30 rounded-2xl p-5 mb-6">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-[10px] bg-danger-500 dark:bg-dark-danger text-white px-2.5 py-0.5 rounded-full font-bold font-sans">
+              TRENDING
+            </span>
+            <span className="text-xs text-danger-500 dark:text-dark-danger font-sans">
+              {trending.is_fallback ? "Nationwide" : trending.state_name}
+            </span>
+          </div>
+          <div className="text-base font-bold text-navy-900 dark:text-dark-text-primary mb-1 font-sans">
+            {scamTypeLabels[trending.scam_type] || trending.scam_type} Surging
+          </div>
+          <div className="text-sm text-navy-700 dark:text-dark-text-secondary leading-relaxed font-sans">
+            {trending.count} report{trending.count !== 1 ? "s" : ""} in the last
+            48 hours
+            {trending.is_fallback
+              ? " nationwide"
+              : ` in ${trending.state_name}`}
+            .
+          </div>
         </div>
-        <div className="text-sm text-navy-700 dark:text-dark-text-secondary leading-relaxed font-sans">
-          47 reports in the last 48 hours of callers posing as Florida Power &
-          Light, threatening immediate shutoff and demanding gift card payment.
-        </div>
-      </div>
+      ) : null}
 
       {/* Posts */}
       {loading ? (
@@ -116,9 +207,6 @@ export default function Community() {
         <div className="text-center py-12">
           <div className="text-danger-500 dark:text-dark-danger mb-4">
             {error}
-          </div>
-          <div className="text-sm text-navy-600 dark:text-dark-text-secondary">
-            Showing example posts instead
           </div>
         </div>
       ) : null}
@@ -137,7 +225,8 @@ export default function Community() {
           !loading && (
             <div className="text-center py-12">
               <div className="text-navy-600 dark:text-dark-text-secondary mb-4">
-                No posts yet. Be the first to report a scam!
+                No posts yet in {STATE_CODE_MAP[selectedState]}. Be the first to
+                report a scam!
               </div>
               <button
                 onClick={handleReportClick}
@@ -170,7 +259,26 @@ export default function Community() {
         open={showNewPostModal}
         onClose={() => setShowNewPostModal(false)}
         onSubmit={handleNewPost}
+        defaultState={selectedState}
       />
     </main>
+  );
+}
+
+export default function Community() {
+  return (
+    <Suspense
+      fallback={
+        <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+          <div className="text-center py-12">
+            <div className="text-navy-600 dark:text-dark-text-secondary">
+              Loading...
+            </div>
+          </div>
+        </main>
+      }
+    >
+      <CommunityContent />
+    </Suspense>
   );
 }
