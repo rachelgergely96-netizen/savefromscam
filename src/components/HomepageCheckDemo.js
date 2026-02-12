@@ -91,14 +91,14 @@ export default function HomepageCheckDemo() {
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Paste a suspicious message here..."
-            className="w-full min-h-[180px] bg-white border-2 border-sage-300 rounded-[var(--radius)] p-5 text-navy-900 text-lg leading-relaxed resize-y outline-none focus:border-teal-500 transition-all duration-200 placeholder:text-navy-500 font-sans"
+            className="w-full min-h-[180px] bg-white dark:bg-dark-bg-secondary border-2 border-sage-300 dark:border-dark-border rounded-[var(--radius)] p-5 text-navy-900 dark:text-dark-text-primary text-lg leading-relaxed resize-y outline-none focus:border-teal-500 dark:focus:border-dark-teal-primary transition-all duration-200 placeholder:text-navy-500 dark:placeholder:text-dark-text-tertiary font-sans"
             style={{ boxShadow: 'var(--shadow-sm)' }}
             disabled={analyzing}
           />
 
           {/* Character count */}
           {text.length > 0 && (
-            <div className="absolute bottom-3 right-3 text-xs text-navy-600 bg-white/95 px-2 py-1 rounded border border-sage-200">
+            <div className="absolute bottom-3 right-3 text-xs text-navy-600 dark:text-dark-text-tertiary bg-white/95 dark:bg-dark-bg-tertiary/95 px-2 py-1 rounded border border-sage-200 dark:border-dark-border">
               {text.length} characters
             </div>
           )}
@@ -139,12 +139,12 @@ export default function HomepageCheckDemo() {
       </div>
 
       {error && (
-        <div className="card-flat rounded-card p-5 mb-6 border-danger-400 bg-danger-50 animate-fade-in">
-          <p className="text-navy-900 text-base font-sans">{error}</p>
+        <div className="card-flat rounded-card p-5 mb-6 border-danger-400 dark:border-dark-danger bg-danger-50 dark:bg-dark-danger-bg animate-fade-in">
+          <p className="text-navy-900 dark:text-dark-text-primary text-base font-sans">{error}</p>
           {!user && (
             <Link
               href="/auth"
-              className="inline-block mt-3 text-teal-500 font-bold text-base font-sans hover:underline"
+              className="inline-block mt-3 text-teal-500 dark:text-dark-teal-primary font-bold text-base font-sans hover:underline"
             >
               Create account to check →
             </Link>
@@ -152,7 +152,7 @@ export default function HomepageCheckDemo() {
           {limitReached && user && (
             <Link
               href="/pricing"
-              className="inline-block mt-3 text-teal-500 font-bold text-base font-sans hover:underline"
+              className="inline-block mt-3 text-teal-500 dark:text-dark-teal-primary font-bold text-base font-sans hover:underline"
             >
               Upgrade to Premium →
             </Link>
@@ -172,7 +172,7 @@ export default function HomepageCheckDemo() {
 
           {/* Progress steps */}
           <div className="space-y-2">
-            <p className="text-navy-700 text-lg font-medium font-sans">
+            <p className="text-navy-700 dark:text-dark-text-secondary text-lg font-medium font-sans">
               Analyzing message...
             </p>
             <div className="flex items-center justify-center gap-1.5">
@@ -180,7 +180,7 @@ export default function HomepageCheckDemo() {
               <AnimatedDot delay={200} />
               <AnimatedDot delay={400} />
             </div>
-            <p className="text-navy-600 text-base font-sans">
+            <p className="text-navy-600 dark:text-dark-text-tertiary text-base font-sans">
               Checking manipulation patterns • Evaluating risk • Generating report
             </p>
           </div>
@@ -198,17 +198,17 @@ export default function HomepageCheckDemo() {
             <div className={`text-5xl font-bold font-sans ${verdictColor}`}>
               {result.confidence}%
             </div>
-            <div className="text-sm text-navy-600 font-sans mt-1">
+            <div className="text-sm text-navy-600 dark:text-dark-text-tertiary font-sans mt-1">
               confidence
             </div>
           </div>
 
           {result.summary && (
             <div className="card-flat rounded-card p-5">
-              <div className="text-sm font-bold text-navy-600 uppercase tracking-wider font-sans mb-2">
+              <div className="text-sm font-bold text-navy-600 dark:text-dark-text-tertiary uppercase tracking-wider font-sans mb-2">
                 Summary
               </div>
-              <p className="text-base text-navy-700 leading-relaxed font-sans">
+              <p className="text-base text-navy-700 dark:text-dark-text-secondary leading-relaxed font-sans">
                 {result.summary}
               </p>
             </div>
@@ -216,14 +216,14 @@ export default function HomepageCheckDemo() {
 
           {result.tactics?.length > 0 && (
             <div className="card-flat rounded-card p-5">
-              <div className="text-sm font-bold text-navy-600 uppercase tracking-wider font-sans mb-3">
+              <div className="text-sm font-bold text-navy-600 dark:text-dark-text-tertiary uppercase tracking-wider font-sans mb-3">
                 Tactics detected
               </div>
               <ul className="space-y-2">
                 {result.tactics.slice(0, 4).map((t, i) => (
-                  <li key={i} className="text-base text-navy-700 font-sans">
-                    <span className="font-bold text-navy-900">{t.name}</span>
-                    <span className="text-navy-600"> — {t.desc}</span>
+                  <li key={i} className="text-base text-navy-700 dark:text-dark-text-secondary font-sans">
+                    <span className="font-bold text-navy-900 dark:text-dark-text-primary">{t.name}</span>
+                    <span className="text-navy-600 dark:text-dark-text-tertiary"> — {t.desc}</span>
                   </li>
                 ))}
               </ul>
@@ -231,11 +231,11 @@ export default function HomepageCheckDemo() {
           )}
 
           {result.actions?.length > 0 && (
-            <div className="card-flat rounded-card p-5 border-teal-400 bg-teal-50">
-              <div className="text-sm font-bold text-teal-700 uppercase tracking-wider font-sans mb-2">
+            <div className="card-flat rounded-card p-5 border-teal-400 dark:border-dark-teal-primary bg-teal-50 dark:bg-dark-teal-bg">
+              <div className="text-sm font-bold text-teal-700 dark:text-dark-teal-primary uppercase tracking-wider font-sans mb-2">
                 What to do next
               </div>
-              <ol className="list-decimal list-inside space-y-1 text-base text-navy-700 font-sans">
+              <ol className="list-decimal list-inside space-y-1 text-base text-navy-700 dark:text-dark-text-secondary font-sans">
                 {result.actions.slice(0, 3).map((a, i) => (
                   <li key={i}>{a}</li>
                 ))}
@@ -289,7 +289,7 @@ export default function HomepageCheckDemo() {
                   {saved ? "Saved" : saving ? "Saving…" : "Save to your history"}
                 </button>
                 {saveError && (
-                  <span className="text-sm text-danger-500 font-sans">{saveError}</span>
+                  <span className="text-sm text-danger-500 dark:text-dark-danger font-sans">{saveError}</span>
                 )}
               </>
             )}

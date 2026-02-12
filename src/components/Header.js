@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/components/AuthContext";
+import ThemeToggle from "@/components/ThemeToggle";
 import { Search, Gamepad2, Users, Shield } from "lucide-react";
 
 const navLinks = [
@@ -18,7 +19,7 @@ export default function Header() {
   const { user, loading, signOut } = useAuth();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-sage-200 backdrop-blur-xl bg-white/95 shadow-sm">
+    <header className="sticky top-0 z-50 border-b border-sage-200 dark:border-dark-border backdrop-blur-xl bg-white/95 dark:bg-dark-bg-secondary/95 shadow-sm">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-3 group">
@@ -26,10 +27,10 @@ export default function Header() {
               S
             </div>
             <div>
-              <div className="text-lg font-bold text-teal-600 tracking-tight font-sans">
+              <div className="text-lg font-bold text-teal-600 dark:text-dark-teal-primary tracking-tight font-sans">
                 SaveFromScam
               </div>
-              <div className="text-[11px] text-navy-600 tracking-widest uppercase font-sans">
+              <div className="text-[11px] text-navy-600 dark:text-dark-text-tertiary tracking-widest uppercase font-sans">
                 Protect What Matters
               </div>
             </div>
@@ -46,8 +47,8 @@ export default function Header() {
                     href={link.href}
                     className={`flex items-center gap-1.5 px-4 py-2 rounded-[var(--radius)] text-sm font-semibold font-sans transition-colors ${
                       active
-                        ? "bg-teal-100 text-teal-700"
-                        : "text-navy-600 hover:text-teal-600 hover:bg-sage-50"
+                        ? "bg-teal-100 dark:bg-dark-teal-bg text-teal-700 dark:text-dark-teal-primary"
+                        : "text-navy-600 dark:text-dark-text-secondary hover:text-teal-600 dark:hover:text-dark-teal-primary hover:bg-sage-50 dark:hover:bg-dark-bg-tertiary"
                     }`}
                   >
                     <Icon className="w-4 h-4" aria-hidden />
@@ -60,10 +61,11 @@ export default function Header() {
 
           {isHome && (
             <div className="flex items-center gap-3">
+              <ThemeToggle />
               {!loading && user && (
                 <button
                   onClick={signOut}
-                  className="text-xs text-navy-600 hover:text-teal-600 font-sans cursor-pointer"
+                  className="text-xs text-navy-600 dark:text-dark-text-secondary hover:text-teal-600 dark:hover:text-dark-teal-primary font-sans cursor-pointer"
                 >
                   Sign out
                 </button>
@@ -89,8 +91,8 @@ export default function Header() {
                   href={link.href}
                   className={`flex items-center gap-1.5 px-3 py-2 rounded-[var(--radius)] text-xs font-semibold font-sans whitespace-nowrap transition-colors ${
                     active
-                      ? "bg-teal-100 text-teal-700"
-                      : "text-navy-600 hover:text-teal-600 hover:bg-sage-50"
+                      ? "bg-teal-100 dark:bg-dark-teal-bg text-teal-700 dark:text-dark-teal-primary"
+                      : "text-navy-600 dark:text-dark-text-secondary hover:text-teal-600 dark:hover:text-dark-teal-primary hover:bg-sage-50 dark:hover:bg-dark-bg-tertiary"
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" aria-hidden />

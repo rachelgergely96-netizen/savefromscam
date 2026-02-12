@@ -35,10 +35,10 @@ export default function TrustBadge({ variant = "secure", size = "sm" }) {
     ? "px-4 py-2.5 text-base gap-2.5"
     : "px-5 py-3 text-lg gap-3";
 
-  // Saturated colors with white text for high visibility on light backgrounds
+  // Saturated colors with white text for high visibility on light and dark backgrounds
   const colorClasses = variant === "secure" || variant === "redacted"
-    ? "bg-sage-500 border-2 border-sage-600 text-white"
-    : "bg-teal-600 border-2 border-teal-700 text-white";
+    ? "bg-sage-500 dark:bg-dark-success border-2 border-sage-600 dark:border-dark-success text-white"
+    : "bg-teal-600 dark:bg-dark-teal-primary border-2 border-teal-700 dark:border-dark-teal-hover text-white dark:text-dark-bg-primary";
 
   return (
     <div

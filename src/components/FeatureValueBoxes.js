@@ -45,10 +45,10 @@ export default function FeatureValueBoxes() {
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
       <div className="text-center mb-12">
-        <h2 className="text-3xl sm:text-4xl font-bold text-navy-900 mb-4 font-sans">
+        <h2 className="text-3xl sm:text-4xl font-bold text-navy-900 dark:text-dark-text-primary mb-4 font-sans">
           Why families trust SaveFromScam
         </h2>
-        <p className="text-xl text-navy-600 max-w-2xl mx-auto font-sans">
+        <p className="text-xl text-navy-600 dark:text-dark-text-secondary max-w-2xl mx-auto font-sans">
           The only free tool that explains scam tactics in plain language—and helps you train your instincts.
         </p>
       </div>
@@ -57,23 +57,23 @@ export default function FeatureValueBoxes() {
         {FEATURES.map((feature, i) => {
           const Icon = feature.icon;
           const colorClasses = feature.color === "teal"
-            ? "bg-teal-500/12 text-teal-600"
-            : "bg-sage-500/12 text-sage-600";
+            ? "bg-teal-500/12 dark:bg-dark-teal-bg text-teal-600 dark:text-dark-teal-primary"
+            : "bg-sage-500/12 dark:bg-dark-success-bg text-sage-600 dark:text-dark-success";
 
           return (
             <div
               key={i}
-              className="card-flat rounded-card p-6 hover:shadow-lg transition-all duration-200 group"
+              className="card-flat rounded-card p-6 hover:shadow-lg dark:hover:shadow-dark-card transition-all duration-200 group"
             >
               <div className={`w-16 h-16 rounded-[var(--radius)] ${colorClasses} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-200`}>
                 <Icon className="w-8 h-8" aria-hidden />
               </div>
 
-              <h3 className="text-xl font-bold text-navy-900 mb-3 font-sans">
+              <h3 className="text-xl font-bold text-navy-900 dark:text-dark-text-primary mb-3 font-sans">
                 {feature.title}
               </h3>
 
-              <p className="text-base text-navy-600 leading-relaxed font-sans">
+              <p className="text-base text-navy-600 dark:text-dark-text-secondary leading-relaxed font-sans">
                 {feature.description}
               </p>
             </div>

@@ -112,7 +112,7 @@ export default function Simulator() {
     <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
       {/* XP Bar + Usage */}
       <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
-        <div className="text-xs text-navy-500 font-sans">
+        <div className="text-xs text-navy-600 font-sans">
           {user && usage != null
             ? usage.scenariosLimit == null
               ? "Unlimited scenarios (Premium)"
@@ -121,11 +121,11 @@ export default function Simulator() {
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 bg-teal-500/10 rounded-full px-4 py-1.5 border border-teal-500/20">
-            <span className="text-sm font-bold text-teal-500 font-sans">
+            <span className="text-sm font-bold text-teal-600 font-sans">
               {xp} XP
             </span>
           </div>
-          <div className="text-xs text-navy-500 font-sans">
+          <div className="text-xs text-navy-600 font-sans">
             {completedIds.length}/{SCENARIOS.length} completed
           </div>
         </div>
@@ -134,30 +134,30 @@ export default function Simulator() {
       {/* INTRO — Scenario picker */}
       {step === "intro" && (
         <div>
-          <h1 className="text-3xl font-extrabold text-navy-200 mb-2">
+          <h1 className="text-3xl font-extrabold text-navy-900 mb-2 font-sans">
             Scam Simulator
           </h1>
-          <p className="text-navy-400 mb-8 leading-relaxed">
+          <p className="text-navy-700 mb-8 leading-relaxed font-sans">
             Experience realistic scam scenarios in a safe environment. Spot the
             red flags, make your call, and build the instincts that protect you in
             real life.
           </p>
           {!loading && !user && (
-            <div className="bg-gold-500/10 border border-gold-500/25 rounded-2xl p-4 mb-6">
-              <p className="text-navy-200 text-sm font-sans">
+            <div className="bg-gold-50 border border-gold-500/25 rounded-2xl p-4 mb-6">
+              <p className="text-navy-900 text-sm font-sans">
                 Sign in to use the Simulator. Free accounts get 1 scenario per day.
               </p>
               <Link
                 href="/auth"
-                className="inline-block mt-2 text-teal-500 font-bold text-sm font-sans hover:underline"
+                className="inline-block mt-2 text-teal-600 font-bold text-sm font-sans hover:underline"
               >
                 Sign in →
               </Link>
             </div>
           )}
           {useError && (
-            <div className="bg-danger-500/10 border border-danger-500/25 rounded-2xl p-4 mb-6 flex flex-wrap items-center justify-between gap-2">
-              <p className="text-navy-200 text-sm font-sans">{useError}</p>
+            <div className="bg-danger-50 border border-danger-400 rounded-2xl p-4 mb-6 flex flex-wrap items-center justify-between gap-2">
+              <p className="text-navy-900 text-sm font-sans">{useError}</p>
               <Link
                 href="/pricing"
                 className="text-teal-500 font-bold text-sm font-sans hover:underline"
@@ -174,26 +174,26 @@ export default function Simulator() {
                   key={s.id}
                   onClick={() => handleStartScenario(i)}
                   disabled={!user || useLoading}
-                  className="w-full bg-navy-900/70 border border-teal-500/10 rounded-2xl p-5 text-left flex items-center gap-4 hover:border-teal-500/25 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full card-flat border border-sage-200 rounded-2xl p-5 text-left flex items-center gap-4 hover:border-teal-500 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <div className="w-13 h-13 rounded-xl bg-teal-500/12 flex items-center justify-center text-2xl shrink-0">
                     {s.icon}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-base font-bold text-navy-200">
+                    <div className="text-base font-bold text-navy-900 font-sans">
                       {s.type} Scenario
                       {done && (
-                        <span className="ml-2 text-xs text-teal-500 font-sans">
+                        <span className="ml-2 text-xs text-teal-600 font-sans font-semibold">
                           &#10003; Done
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-navy-500 font-sans mt-0.5">
+                    <div className="text-xs text-navy-600 font-sans mt-0.5">
                       {s.difficulty} &middot; {s.redFlags.length} red flags to
                       find &middot; +{25 + s.redFlags.length * 10} XP possible
                     </div>
                   </div>
-                  <div className="text-teal-500 text-lg shrink-0">&rarr;</div>
+                  <div className="text-teal-600 text-lg shrink-0">&rarr;</div>
                 </button>
               );
             })}
