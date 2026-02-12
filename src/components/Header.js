@@ -36,52 +36,7 @@ export default function Header() {
             </div>
           </Link>
 
-          {!isHome && (
-            <nav className="hidden sm:flex items-center gap-1">
-              {navLinks.map((link) => {
-                const active = pathname === link.href;
-                const Icon = link.icon;
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`flex items-center gap-1.5 px-4 py-2 rounded-[var(--radius)] text-sm font-semibold font-sans transition-colors ${
-                      active
-                        ? "bg-teal-100 dark:bg-dark-teal-bg text-teal-700 dark:text-dark-teal-primary"
-                        : "text-navy-600 dark:text-dark-text-secondary hover:text-teal-600 dark:hover:text-dark-teal-primary hover:bg-sage-50 dark:hover:bg-dark-bg-tertiary"
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" aria-hidden />
-                    {link.label}
-                  </Link>
-                );
-              })}
-            </nav>
-          )}
-
-          {isHome && (
-            <div className="flex items-center gap-3">
-              <ThemeToggle />
-              {!loading && user && (
-                <button
-                  onClick={signOut}
-                  className="text-xs text-navy-600 dark:text-dark-text-secondary hover:text-teal-600 dark:hover:text-dark-teal-primary font-sans cursor-pointer"
-                >
-                  Sign out
-                </button>
-              )}
-              <Link
-                href="/pricing"
-                className="px-5 py-2.5 rounded-[var(--radius)] bg-teal-500 text-white text-sm font-bold font-sans hover:shadow-[var(--shadow-card)] transition-shadow"
-              >
-                {user ? "Manage plan" : "Free Plan"}
-              </Link>
-            </div>
-          )}
-        </div>
-
-        {!isHome && (
-          <nav className="sm:hidden flex gap-1 pb-2 overflow-x-auto -mx-4 px-4">
+          <nav className="hidden sm:flex items-center gap-1">
             {navLinks.map((link) => {
               const active = pathname === link.href;
               const Icon = link.icon;
@@ -89,19 +44,60 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-[var(--radius)] text-xs font-semibold font-sans whitespace-nowrap transition-colors ${
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-[var(--radius)] text-sm font-semibold font-sans transition-colors ${
                     active
                       ? "bg-teal-100 dark:bg-dark-teal-bg text-teal-700 dark:text-dark-teal-primary"
                       : "text-navy-600 dark:text-dark-text-secondary hover:text-teal-600 dark:hover:text-dark-teal-primary hover:bg-sage-50 dark:hover:bg-dark-bg-tertiary"
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5" aria-hidden />
+                  <Icon className="w-4 h-4" aria-hidden />
                   {link.label}
                 </Link>
               );
             })}
           </nav>
-        )}
+
+          <div className="hidden sm:flex items-center gap-3">
+            <ThemeToggle />
+            {!loading && user && (
+              <button
+                onClick={signOut}
+                className="text-xs text-navy-600 dark:text-dark-text-secondary hover:text-teal-600 dark:hover:text-dark-teal-primary font-sans cursor-pointer"
+              >
+                Sign out
+              </button>
+            )}
+            {isHome && (
+              <Link
+                href="/pricing"
+                className="px-5 py-2.5 rounded-[var(--radius)] bg-teal-500 text-white text-sm font-bold font-sans hover:shadow-[var(--shadow-card)] transition-shadow"
+              >
+                {user ? "Manage plan" : "Free Plan"}
+              </Link>
+            )}
+          </div>
+        </div>
+
+        <nav className="sm:hidden flex gap-1 pb-2 overflow-x-auto -mx-4 px-4">
+          {navLinks.map((link) => {
+            const active = pathname === link.href;
+            const Icon = link.icon;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-[var(--radius)] text-xs font-semibold font-sans whitespace-nowrap transition-colors ${
+                  active
+                    ? "bg-teal-100 dark:bg-dark-teal-bg text-teal-700 dark:text-dark-teal-primary"
+                    : "text-navy-600 dark:text-dark-text-secondary hover:text-teal-600 dark:hover:text-dark-teal-primary hover:bg-sage-50 dark:hover:bg-dark-bg-tertiary"
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" aria-hidden />
+                {link.label}
+              </Link>
+            );
+          })}
+        </nav>
       </div>
     </header>
   );
