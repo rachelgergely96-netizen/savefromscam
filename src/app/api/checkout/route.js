@@ -1,10 +1,17 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 import { stripe } from "@/lib/stripe";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
-// IMPORTANT: For now we accept a userId from the client.
-// Once Supabase Auth is wired into the app, this should come
-// from the authenticated session on the server instead.
+function getSupabaseUserFromToken(accessToken) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey || !accessToken) return null;
+  return createClient(url, anonKey, {
+    global: { headers: { Authorization: `Bearer ${accessToken}` } },
+    auth: { persistSession: false },
+  });
+}
 
 export async function POST(request) {
   try {
@@ -15,22 +22,45 @@ export async function POST(request) {
       );
     }
 
+    // Authenticate user from Authorization header (not client request body!)
+    const authHeader = request.headers.get("Authorization");
+    const accessToken = authHeader?.replace(/^Bearer\s+/i, "").trim();
+
+    if (!accessToken) {
+      return NextResponse.json(
+        { error: "Authentication required. Please sign in to upgrade." },
+        { status: 401 }
+      );
+    }
+
+    const userClient = getSupabaseUserFromToken(accessToken);
+    if (!userClient) {
+      return NextResponse.json(
+        { error: "Authentication required. Please sign in to upgrade." },
+        { status: 401 }
+      );
+    }
+
+    const { data: { user }, error: authError } = await userClient.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: "Authentication required. Please sign in to upgrade." },
+        { status: 401 }
+      );
+    }
+
+    // Use server-verified user ID and email (NOT from client!)
+    const userId = user.id;
+    const email = user.email;
+
     const {
       priceId = process.env.STRIPE_PRICE_ID,
-      userId,
-      email,
     } = await request.json();
 
     if (!priceId) {
       return NextResponse.json(
         { error: "Stripe price ID is missing." },
-        { status: 400 }
-      );
-    }
-
-    if (!userId && !email) {
-      return NextResponse.json(
-        { error: "userId or email is required to create a checkout session." },
         { status: 400 }
       );
     }
