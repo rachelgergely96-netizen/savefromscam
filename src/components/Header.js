@@ -67,6 +67,14 @@ export default function Header() {
                 Sign out
               </button>
             )}
+            {isHome && !loading && !user && (
+              <Link
+                href="/auth"
+                className="px-5 py-2.5 rounded-[var(--radius)] bg-cyan-400 text-navy-900 text-sm font-bold font-sans hover:bg-cyan-300 transition-colors"
+              >
+                Create free account
+              </Link>
+            )}
             {isHome && (
               <Link
                 href="/pricing"
