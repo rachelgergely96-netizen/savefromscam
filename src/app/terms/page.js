@@ -127,8 +127,8 @@ export default function TermsPage() {
           <h2 className="text-lg font-bold text-navy-200 mb-3">12. Contact</h2>
           <p>
             For questions about these Terms, contact us at{" "}
-            <a href="mailto:support@savefromscam.com" className="text-teal-500 hover:underline">
-              support@savefromscam.com
+            <a href="mailto:savefromscam@outlook.com" className="text-teal-500 hover:underline">
+              savefromscam@outlook.com
             </a>.
           </p>
         </section>

@@ -120,8 +120,8 @@ export default function PrivacyPage() {
           </ul>
           <p className="mt-3">
             To exercise these rights, contact us at{" "}
-            <a href="mailto:support@savefromscam.com" className="text-teal-500 hover:underline">
-              support@savefromscam.com
+            <a href="mailto:savefromscam@outlook.com" className="text-teal-500 hover:underline">
+              savefromscam@outlook.com
             </a>.
           </p>
         </section>
@@ -147,8 +147,8 @@ export default function PrivacyPage() {
           <h2 className="text-lg font-bold text-navy-200 mb-3">11. Contact</h2>
           <p>
             For privacy-related questions or requests, contact us at{" "}
-            <a href="mailto:support@savefromscam.com" className="text-teal-500 hover:underline">
-              support@savefromscam.com
+            <a href="mailto:savefromscam@outlook.com" className="text-teal-500 hover:underline">
+              savefromscam@outlook.com
             </a>.
           </p>
         </section>
