@@ -35,6 +35,7 @@ function CommunityContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showNewPostModal, setShowNewPostModal] = useState(false);
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const [trending, setTrending] = useState(null);
   const [trendingLoading, setTrendingLoading] = useState(true);
 
@@ -118,7 +119,7 @@ function CommunityContent() {
 
   function handleReportClick() {
     if (!session) {
-      window.location.href = "/auth";
+      setShowAuthPrompt(true);
       return;
     }
     setShowNewPostModal(true);
@@ -251,6 +252,43 @@ function CommunityContent() {
           >
             + Report a Scam
           </button>
+        </div>
+      )}
+
+      {/* Auth Prompt Modal */}
+      {showAuthPrompt && (
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-dark-bg-secondary rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center">
+            <div className="w-14 h-14 rounded-full bg-teal-500/10 dark:bg-dark-teal-bg flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl text-teal-600 dark:text-dark-teal-primary">&#9432;</span>
+            </div>
+            <h2 className="text-xl font-bold text-navy-900 dark:text-dark-text-primary mb-2 font-sans">
+              Join the Community
+            </h2>
+            <p className="text-sm text-navy-600 dark:text-dark-text-secondary mb-6 font-sans leading-relaxed">
+              Create a free account to report scams, vote on posts, and help protect your neighbors.
+            </p>
+            <div className="flex flex-col gap-3">
+              <a
+                href="/auth"
+                className="px-6 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 dark:from-dark-teal-primary dark:to-dark-teal-hover text-navy-950 dark:text-dark-bg-primary text-sm font-bold font-sans shadow-[0_4px_20px_rgba(46,196,182,0.3)] hover:shadow-[0_4px_28px_rgba(46,196,182,0.45)] transition-shadow"
+              >
+                Create Free Account
+              </a>
+              <a
+                href="/auth"
+                className="px-6 py-3 rounded-xl border border-sage-200 dark:border-dark-border text-navy-900 dark:text-dark-text-primary text-sm font-bold font-sans hover:bg-sage-50 dark:hover:bg-dark-bg-tertiary transition-colors"
+              >
+                Sign In
+              </a>
+              <button
+                onClick={() => setShowAuthPrompt(false)}
+                className="text-xs text-navy-600 dark:text-dark-text-tertiary hover:text-navy-900 dark:hover:text-dark-text-primary transition-colors cursor-pointer mt-1"
+              >
+                Maybe later
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
