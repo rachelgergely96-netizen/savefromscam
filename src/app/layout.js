@@ -1,5 +1,5 @@
 import "./globals.css";
-import Header from "@/components/Header";
+import HeaderSwitcher from "@/components/HeaderSwitcher";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import { AuthProvider } from "@/components/AuthContext";
 import { ThemeProvider } from "@/components/ThemeContext";
@@ -46,7 +46,7 @@ export default function RootLayout({ children }) {
         <div className="relative z-10 pb-20 sm:pb-0">
           <ThemeProvider>
             <AuthProvider>
-              <Header />
+              <HeaderSwitcher />
               {children}
               <StickyMobileCTA />
             </AuthProvider>

@@ -90,6 +90,12 @@ export default function HomepageCheckDemo() {
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => {
+              if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                e.preventDefault();
+                if (text.trim() && !analyzing) runCheck();
+              }
+            }}
             placeholder="Paste a suspicious message here..."
             className="w-full min-h-[180px] bg-white dark:bg-dark-bg-secondary border-2 border-sage-300 dark:border-dark-border rounded-[var(--radius)] p-5 text-navy-900 dark:text-dark-text-primary text-lg leading-relaxed resize-y outline-none focus:border-teal-500 dark:focus:border-dark-teal-primary transition-all duration-200 placeholder:text-navy-500 dark:placeholder:text-dark-text-tertiary font-sans"
             style={{ boxShadow: 'var(--shadow-sm)' }}

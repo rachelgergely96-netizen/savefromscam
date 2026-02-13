@@ -4,9 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/components/AuthContext";
 import ThemeToggle from "@/components/ThemeToggle";
-import { Search, Gamepad2, Users, Shield, Clock } from "lucide-react";
+import { LayoutDashboard, Search, Gamepad2, Users, Shield, Clock } from "lucide-react";
 
 const navLinks = [
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/check", label: "Scam Check", icon: Search },
   { href: "/simulator", label: "Simulator", icon: Gamepad2 },
   { href: "/community", label: "Community", icon: Users },
@@ -14,20 +15,20 @@ const navLinks = [
   { href: "/history", label: "History", icon: Clock },
 ];
 
-export default function Header() {
+export default function AppHeader() {
   const pathname = usePathname();
-  const isHome = pathname === "/";
   const { user, loading, signOut } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 border-b border-sage-200 dark:border-dark-border backdrop-blur-xl bg-white/95 dark:bg-dark-bg-secondary/95 shadow-sm">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-3 group">
+          {/* Logo — links to dashboard */}
+          <Link href="/dashboard" className="flex items-center gap-3 group">
             <div className="w-10 h-10 rounded-[var(--radius)] bg-teal-500 flex items-center justify-center text-lg font-bold text-white">
               S
             </div>
-            <div>
+            <div className="hidden sm:block">
               <div className="text-lg font-bold text-teal-600 dark:text-dark-teal-primary tracking-tight font-sans">
                 SaveFromScam
               </div>
@@ -37,6 +38,7 @@ export default function Header() {
             </div>
           </Link>
 
+          {/* Desktop nav */}
           <nav className="hidden sm:flex items-center gap-1">
             {navLinks.map((link) => {
               const active = pathname === link.href;
@@ -58,43 +60,35 @@ export default function Header() {
             })}
           </nav>
 
+          {/* Right side — user info */}
           <div className="hidden sm:flex items-center gap-3">
             <ThemeToggle />
             {!loading && user && (
-              <div className="flex items-center gap-2">
+              <>
                 <div className="w-8 h-8 rounded-full bg-teal-500/15 dark:bg-dark-teal-bg border border-teal-500/30 dark:border-dark-teal-primary/30 flex items-center justify-center text-xs font-bold text-teal-600 dark:text-dark-teal-primary">
                   {user.email?.[0]?.toUpperCase() || "U"}
                 </div>
-                <span className="text-xs text-navy-600 dark:text-dark-text-secondary truncate max-w-[120px] font-sans">
+                <span className="text-xs text-navy-500 dark:text-dark-text-tertiary truncate max-w-[120px] font-sans">
                   {user.email}
                 </span>
+                <Link
+                  href="/pricing"
+                  className="text-xs text-teal-600 dark:text-dark-teal-primary font-semibold font-sans hover:underline"
+                >
+                  Manage plan
+                </Link>
                 <button
                   onClick={signOut}
-                  className="text-xs text-navy-500 dark:text-dark-text-tertiary hover:text-teal-600 dark:hover:text-dark-teal-primary font-sans cursor-pointer"
+                  className="text-xs text-navy-600 dark:text-dark-text-secondary hover:text-teal-600 dark:hover:text-dark-teal-primary font-sans cursor-pointer"
                 >
                   Sign out
                 </button>
-              </div>
-            )}
-            {isHome && !loading && !user && (
-              <Link
-                href="/auth"
-                className="px-5 py-2.5 rounded-[var(--radius)] bg-cyan-400 text-navy-900 text-sm font-bold font-sans hover:bg-cyan-300 transition-colors"
-              >
-                Create free account
-              </Link>
-            )}
-            {isHome && (
-              <Link
-                href="/pricing"
-                className="px-5 py-2.5 rounded-[var(--radius)] bg-teal-500 text-white text-sm font-bold font-sans hover:shadow-[var(--shadow-card)] transition-shadow"
-              >
-                {user ? "Manage plan" : "Free Plan"}
-              </Link>
+              </>
             )}
           </div>
         </div>
 
+        {/* Mobile nav — horizontal scroll */}
         <div className="sm:hidden relative">
           <nav className="flex gap-1 pb-2 overflow-x-auto -mx-4 px-4">
             {navLinks.map((link) => {
@@ -132,11 +126,6 @@ export default function Header() {
                 Sign out
               </button>
             </div>
-          )}
-          {!loading && !user && (
-            <Link href="/auth" className="text-xs text-teal-600 dark:text-dark-teal-primary font-semibold font-sans">
-              Sign in
-            </Link>
           )}
         </div>
       </div>

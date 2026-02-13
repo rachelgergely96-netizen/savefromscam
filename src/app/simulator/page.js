@@ -116,7 +116,9 @@ export default function Simulator() {
           {user && usage != null
             ? usage.scenariosLimit == null
               ? "Unlimited scenarios (Premium)"
-              : `${usage.scenariosUsed} / ${usage.scenariosLimit} scenarios used today`
+              : usage.scenariosLimit - usage.scenariosUsed <= 0
+                ? "No scenarios remaining today"
+                : `${usage.scenariosLimit - usage.scenariosUsed} scenario${usage.scenariosLimit - usage.scenariosUsed !== 1 ? "s" : ""} remaining today`
             : null}
         </div>
         <div className="flex items-center gap-3">
@@ -217,19 +219,19 @@ export default function Simulator() {
           </div>
 
           {/* Message */}
-          <div className="bg-navy-900/80 rounded-2xl p-6 border border-teal-500/10 mb-5">
+          <div className="bg-navy-100 dark:bg-dark-bg-secondary rounded-2xl p-6 border border-sage-200 dark:border-dark-border mb-5">
             <div className="flex items-center gap-3 mb-4">
               <span className="text-2xl">{scenario.icon}</span>
               <div>
-                <div className="text-sm font-bold text-navy-200">
+                <div className="text-sm font-bold text-navy-900 dark:text-dark-text-primary">
                   Incoming {scenario.type}
                 </div>
-                <div className="text-xs text-navy-500 font-sans">
+                <div className="text-xs text-navy-600 dark:text-dark-text-tertiary font-sans">
                   From: {scenario.from}
                 </div>
               </div>
             </div>
-            <div className="bg-navy-950/60 rounded-xl p-5 text-sm leading-relaxed text-navy-300 border border-navy-600/20 whitespace-pre-wrap">
+            <div className="bg-white dark:bg-dark-bg-tertiary rounded-xl p-5 text-sm leading-relaxed text-navy-900 dark:text-dark-text-secondary border border-sage-200 dark:border-dark-border whitespace-pre-wrap">
               {scenario.message}
             </div>
           </div>
@@ -249,7 +251,7 @@ export default function Simulator() {
                     className={`w-full text-left rounded-xl p-3 transition-all cursor-pointer ${
                       selected
                         ? "bg-teal-500/15 border border-teal-500"
-                        : "bg-navy-950/40 border border-navy-600/20 hover:border-navy-500/40"
+                        : "bg-sage-50 dark:bg-dark-bg-tertiary border border-sage-200 dark:border-dark-border hover:border-sage-400 dark:hover:border-dark-text-disabled"
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -257,13 +259,13 @@ export default function Simulator() {
                         className={`w-5 h-5 rounded shrink-0 flex items-center justify-center text-xs font-bold ${
                           selected
                             ? "bg-teal-500 text-navy-950"
-                            : "border-2 border-navy-600"
+                            : "border-2 border-navy-400 dark:border-dark-text-disabled"
                         }`}
                       >
                         {selected ? "\u2713" : ""}
                       </div>
                       <span
-                        className={`text-xs font-mono ${selected ? "text-teal-500" : "text-navy-400"}`}
+                        className={`text-xs font-mono ${selected ? "text-teal-500" : "text-navy-700 dark:text-dark-text-secondary"}`}
                       >
                         &quot;{flag.text}&quot;
                       </span>

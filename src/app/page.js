@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ShieldCheck, CheckCircle, Info } from "lucide-react";
+import { ShieldCheck, CheckCircle, Info, Gamepad2 } from "lucide-react";
 import HomepageCheckDemo from "@/components/HomepageCheckDemo";
 import HomepageIconSections from "@/components/HomepageIconSections";
 import TrustBadge from "@/components/TrustBadge";
@@ -34,9 +34,10 @@ export default function Home() {
 
             <Link
               href="/simulator"
-              className="inline-flex items-center gap-2 text-base font-semibold text-teal-600 dark:text-dark-teal-primary hover:text-teal-700 dark:hover:text-dark-teal-hover mb-6 font-sans transition-colors"
+              className="btn-secondary inline-flex items-center gap-2 px-6 py-3 text-base font-sans mb-6"
             >
-              Or practice with the Scam Simulator →
+              <Gamepad2 className="w-5 h-5" />
+              Practice with the Scam Simulator
             </Link>
 
             <p className="text-xl sm:text-2xl text-navy-700 dark:text-dark-text-secondary leading-relaxed mb-8 font-sans">

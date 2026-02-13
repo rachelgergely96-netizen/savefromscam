@@ -38,6 +38,7 @@ function CommunityContent() {
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const [trending, setTrending] = useState(null);
   const [trendingLoading, setTrendingLoading] = useState(true);
+  const [filterType, setFilterType] = useState(null);
 
   const fetchPosts = useCallback(async () => {
     setLoading(true);
@@ -139,16 +140,12 @@ function CommunityContent() {
           <h1 className="text-3xl font-extrabold text-navy-900 dark:text-dark-text-primary mb-1 font-sans">
             Community Alerts
           </h1>
-          <div className="flex items-center gap-1.5 text-sm text-navy-600 dark:text-dark-text-secondary font-sans">
+          <div className="flex items-center gap-2 text-sm text-navy-600 dark:text-dark-text-secondary font-sans">
+            <span>Showing alerts for</span>
             <select
               value={selectedState}
               onChange={handleStateChange}
-              className="bg-transparent text-sm font-semibold text-navy-900 dark:text-dark-text-primary border-none outline-none cursor-pointer p-0 pr-5 appearance-none"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M3 5l3 3 3-3'/%3E%3C/svg%3E")`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "right center",
-              }}
+              className="bg-sage-50 dark:bg-dark-bg-tertiary text-sm font-semibold text-navy-900 dark:text-dark-text-primary border border-sage-300 dark:border-dark-border rounded-lg px-3 py-1.5 cursor-pointer outline-none focus:border-teal-500 dark:focus:border-dark-teal-primary"
             >
               {US_STATES.map((s) => (
                 <option key={s.code} value={s.code}>
@@ -197,6 +194,23 @@ function CommunityContent() {
         </div>
       ) : null}
 
+      {/* Scam type filter */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {["All", "Phone", "Text", "Email", "Online"].map((type) => (
+          <button
+            key={type}
+            onClick={() => setFilterType(type === "All" ? null : type)}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold font-sans cursor-pointer transition-colors ${
+              (type === "All" && !filterType) || filterType === type
+                ? "bg-teal-500 dark:bg-dark-teal-primary text-white dark:text-dark-bg-primary"
+                : "bg-sage-100 dark:bg-dark-bg-tertiary text-navy-600 dark:text-dark-text-secondary border border-sage-300 dark:border-dark-border"
+            }`}
+          >
+            {type}
+          </button>
+        ))}
+      </div>
+
       {/* Posts */}
       {loading ? (
         <div className="text-center py-12">
@@ -213,8 +227,8 @@ function CommunityContent() {
       ) : null}
 
       <div className="space-y-3">
-        {posts.length > 0 ? (
-          posts.map((post, i) => (
+        {(filterType ? posts.filter((p) => p.scam_type === filterType) : posts).length > 0 ? (
+          (filterType ? posts.filter((p) => p.scam_type === filterType) : posts).map((post, i) => (
             <PostCard
               key={post.id}
               post={post}

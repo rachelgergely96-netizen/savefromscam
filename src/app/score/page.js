@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useAuth } from "@/components/AuthContext";
 import CircularScore from "@/components/CircularScore";
 
@@ -70,6 +71,18 @@ export default function ScamScore() {
         <div className="inline-block mt-3 px-4 py-1.5 rounded-full bg-teal-500/12 dark:bg-dark-teal-bg border border-teal-500/20 dark:border-dark-teal-primary/30 text-sm text-teal-600 dark:text-dark-teal-primary font-semibold font-sans">
           Intermediate Defender
         </div>
+        {/* Score tier legend */}
+        <div className="mt-4 text-sm text-navy-600 dark:text-dark-text-secondary font-sans">
+          <span className="font-bold">0-39:</span> Vulnerable &middot;{" "}
+          <span className="font-bold">40-69:</span> Aware &middot;{" "}
+          <span className="font-bold">70-100:</span> Defender
+        </div>
+        <p className="text-xs text-navy-500 dark:text-dark-text-tertiary font-sans mt-2">
+          Complete simulator scenarios to improve your score.{" "}
+          <Link href="/pricing" className="text-teal-600 dark:text-dark-teal-primary hover:underline font-semibold">
+            See Premium features
+          </Link>
+        </p>
       </div>
 
       {/* Vulnerability breakdown */}
@@ -82,9 +95,10 @@ export default function ScamScore() {
             <div
               key={i}
               className="card-flat rounded-xl p-4 border border-sage-200 dark:border-dark-border"
+              style={{ borderLeftWidth: "4px", borderLeftColor: v.color }}
             >
-              <div className="flex justify-between mb-2">
-                <span className="text-sm text-navy-900 dark:text-dark-text-primary font-sans">{v.type}</span>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-sm font-bold text-navy-900 dark:text-dark-text-primary font-sans">{v.type}</span>
                 <span
                   className="text-sm font-bold font-sans"
                   style={{ color: v.color }}
@@ -92,7 +106,7 @@ export default function ScamScore() {
                   {v.score}/100
                 </span>
               </div>
-              <div className="h-1.5 rounded-full bg-navy-200 dark:bg-dark-bg-tertiary">
+              <div className="h-2 rounded-full bg-navy-200 dark:bg-dark-bg-tertiary">
                 <div
                   className="h-full rounded-full transition-all duration-1000 ease-out"
                   style={{
@@ -119,36 +133,34 @@ export default function ScamScore() {
         </p>
       </div>
 
-      {/* Family dashboard upsell */}
-      <div className="bg-gradient-to-br from-teal-500/8 to-teal-500/2 dark:from-dark-teal-bg dark:to-dark-teal-bg/50 rounded-2xl p-6 border border-teal-500/15 dark:border-dark-border">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-xl">{"\u{1F468}\u200D\u{1F469}\u200D\u{1F467}\u200D\u{1F466}"}</span>
-          <span className="text-base font-bold text-navy-900 dark:text-dark-text-primary font-sans">
-            Family Dashboard
-          </span>
-          <span className="text-[10px] px-2 py-0.5 rounded bg-gold-500 dark:bg-dark-warning text-navy-950 dark:text-dark-bg-primary font-extrabold font-sans">
-            PREMIUM
-          </span>
+      {/* Family dashboard upsell — subtle */}
+      <div className="card-flat rounded-2xl p-5 border border-sage-200 dark:border-dark-border">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-base font-bold text-navy-900 dark:text-dark-text-primary font-sans">
+                Family Dashboard
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-gold-500 dark:bg-dark-warning text-navy-950 dark:text-dark-bg-primary font-extrabold font-sans">
+                PREMIUM
+              </span>
+            </div>
+            <p className="text-sm text-navy-600 dark:text-dark-text-secondary font-sans">
+              Share alerts and monitor training progress across your family.
+            </p>
+          </div>
+          <button
+            onClick={user ? startPremiumCheckout : () => (window.location.href = "/auth")}
+            disabled={loading}
+            className="btn-primary px-5 py-2.5 text-sm font-sans whitespace-nowrap cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading
+              ? "Loading..."
+              : user
+                ? "Upgrade $9/mo"
+                : "Sign in"}
+          </button>
         </div>
-        <p className="text-sm text-navy-700 dark:text-dark-text-secondary leading-relaxed mb-4 font-sans">
-          Connect with family members to share scam alerts, monitor training
-          progress, and keep each other safe.
-        </p>
-        <button
-          onClick={user ? startPremiumCheckout : () => (window.location.href = "/auth")}
-          disabled={loading}
-          className={`w-full py-3.5 rounded-xl font-bold font-sans cursor-pointer transition-all ${
-            loading
-              ? "bg-navy-700 text-navy-500 cursor-not-allowed"
-              : "bg-gradient-to-r from-gold-500 to-amber-500 text-navy-950 shadow-[0_4px_20px_rgba(244,162,97,0.3)] hover:shadow-[0_4px_28px_rgba(244,162,97,0.45)]"
-          }`}
-        >
-          {loading
-            ? "Redirecting to checkout..."
-            : user
-              ? "Upgrade to Premium — $9.00/mo"
-              : "Sign in to upgrade"}
-        </button>
         {error && (
           <p className="mt-3 text-xs text-danger-500 text-center font-sans">{error}</p>
         )}
