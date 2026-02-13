@@ -137,15 +137,15 @@ export default function Home() {
             &copy; 2026 SaveFromScam.com. All rights reserved.
           </div>
           <div className="flex gap-6 text-base text-navy-600 dark:text-dark-text-secondary font-sans">
-            <a href="#" className="hover:text-teal-600 dark:hover:text-dark-teal-primary transition-colors">
+            <Link href="/privacy" className="hover:text-teal-600 dark:hover:text-dark-teal-primary transition-colors">
               Privacy
-            </a>
-            <a href="#" className="hover:text-teal-600 dark:hover:text-dark-teal-primary transition-colors">
+            </Link>
+            <Link href="/terms" className="hover:text-teal-600 dark:hover:text-dark-teal-primary transition-colors">
               Terms
-            </a>
-            <a href="#" className="hover:text-teal-600 dark:hover:text-dark-teal-primary transition-colors">
-              Contact
-            </a>
+            </Link>
+            <Link href="/disclaimer" className="hover:text-teal-600 dark:hover:text-dark-teal-primary transition-colors">
+              Disclaimer
+            </Link>
           </div>
         </div>
       </footer>

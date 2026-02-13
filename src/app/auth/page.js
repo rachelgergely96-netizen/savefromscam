@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/components/AuthContext";
 
 export default function AuthPage() {
@@ -133,6 +134,14 @@ export default function AuthPage() {
             className="w-full rounded-xl bg-navy-950/60 border border-navy-600/40 px-4 py-3 text-sm text-navy-200 outline-none focus:border-teal-500/60 transition-colors mb-4"
             placeholder={isSignUp ? "Create a password (min 6 characters)" : "Your password"}
           />
+          {isSignUp && (
+            <p className="text-xs text-navy-500 font-sans mb-4">
+              By creating an account, you agree to our{" "}
+              <Link href="/terms" className="text-teal-500 hover:underline">Terms of Service</Link>{" "}
+              and{" "}
+              <Link href="/privacy" className="text-teal-500 hover:underline">Privacy Policy</Link>.
+            </p>
+          )}
           <button
             type="submit"
             disabled={submitting}

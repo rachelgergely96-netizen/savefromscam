@@ -213,6 +213,10 @@ export default function ScamCheck() {
             {analyzing ? "Analyzing…" : !user ? "Sign in to check" : "Check this"}
           </button>
         </div>
+        <p className="text-xs text-navy-600 mt-3 font-sans">
+          Results are AI-generated and may not be accurate. Not legal or financial advice.{" "}
+          <Link href="/disclaimer" className="text-teal-500/70 hover:underline">Full disclaimer</Link>
+        </p>
       </div>
 
       {/* Loading state */}
